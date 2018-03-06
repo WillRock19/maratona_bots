@@ -1,8 +1,10 @@
-﻿using System.Net;
+﻿using System.Configuration;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 using Microsoft.Bot.Builder.Dialogs;
+using Microsoft.Bot.Builder.Luis;
 using Microsoft.Bot.Connector;
 
 namespace TelesBot
@@ -33,7 +35,11 @@ namespace TelesBot
                     break;
 
                 case ActivityTypes.Message:
-                    await Conversation.SendAsync(activity, () => new Dialogs.RootDialog());
+
+                    var luisModel = new LuisModelAttribute(ConfigurationManager.AppSettings["LuisModelId"], ConfigurationManager.AppSettings["LuisSubscriptionKey"]);
+                    var luisService = new LuisService(luisModel);
+
+                    await Conversation.SendAsync(activity, () => new Dialogs.BotDialog(luisService));
                     break;
 
                 case ActivityTypes.DeleteUserData:
