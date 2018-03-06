@@ -39,7 +39,7 @@ namespace TelesBot
                     var luisModel = new LuisModelAttribute(ConfigurationManager.AppSettings["LuisModelId"], ConfigurationManager.AppSettings["LuisSubscriptionKey"]);
                     var luisService = new LuisService(luisModel);
 
-                    await Conversation.SendAsync(activity, () => new Dialogs.BotDialog(luisService));
+                    await Conversation.SendAsync(activity, () => new Dialogs.BotDialog());
                     break;
 
                 case ActivityTypes.DeleteUserData:
