@@ -1,4 +1,5 @@
 ﻿using Microsoft.Bot.Builder.Dialogs;
+using Microsoft.Bot.Builder.FormFlow;
 using Microsoft.Bot.Builder.Luis;
 using Microsoft.Bot.Builder.Luis.Models;
 using Microsoft.Bot.Connector;
@@ -6,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TelesBot.CustomResponses;
+using TelesBot.Forms;
 
 namespace TelesBot.Dialogs
 {
@@ -24,8 +26,8 @@ namespace TelesBot.Dialogs
         [LuisIntent("")]
         public async Task IntencaoNaoReconhecida(IDialogContext context, LuisResult result)
         {
-            await context.PostAsync(@"**( ͡° ͜ʖ ͡°)** - Desculpe, mas não entendi o que você quis dizer. \n\n
-                                    Lembre-se que sou um bot e meu conhecimento é limitado.");
+            await context.PostAsync("**( ͡° ͜ʖ ͡°)** - Desculpe, mas não entendi o que você quis dizer");
+            await context.PostAsync("Lembre-se que sou um bot e meu conhecimento é limitado.");
             context.Done<string>(null);
         }
 
@@ -39,13 +41,6 @@ namespace TelesBot.Dialogs
             await context.PostAsync(message);
         }
 
-        [LuisIntent("None")]
-        public async Task NoneAsync(IDialogContext context, LuisResult result)
-        {
-            await context.PostAsync("Não entendi **(ಥ﹏ಥ)**... Pode tentar repetir com outras palavras?");
-            context.Done<string>(null);
-        }
-
         [LuisIntent("Cumprimentar")]
         public async Task CumprimentoAsync(IDialogContext context, LuisResult result)
         {
@@ -53,17 +48,43 @@ namespace TelesBot.Dialogs
             context.Done<string>(null);
         }
 
-        [LuisIntent("trocar-ideia")]
+        [LuisIntent("Usuario.Checando.Emocional.Bot")]
         public async Task TrocarIdeiaAsync(IDialogContext context, LuisResult result)
         {
             await customResponses.RespondWithQnaMaker(context, result.Query);
             context.Done<string>(null);
         }
 
-        [LuisIntent("Emocional.Usuario")]
+        [LuisIntent("Usuario.Informando.Emocional")]
         public async Task EstadoEspiritoUsuario(IDialogContext context, LuisResult result)
         {
-            await context.PostAsync("Estou me sentindo emotivo... **(ಥ﹏ಥ)**");
+            await customResponses.RespondWithQnaMaker(context, result.Query);
+            context.Done<string>(null);
+        }
+
+        [LuisIntent("ContarPiada")]
+        public async Task ContarUmaPiada(IDialogContext context, LuisResult result)
+        {
+            var formDialog = new FormDialog<ChooseJokes>(new ChooseJokes(), ChooseJokes.BuildForm, FormOptions.PromptInStart);
+            context.Call(formDialog, null);
+        }
+
+        [LuisIntent("ContarPiada.Tiozao")]
+        public async Task ContarUmaPiadaDeTiozao(IDialogContext context, LuisResult result)
+        {
+            await context.PostAsync("Certo, deixa eu pensar em alguma... (◔.◔)");
+        }
+
+        [LuisIntent("ContarPiada.HumorNegro")]
+        public async Task ContarUmaPiadaDeHumorNegro(IDialogContext context, LuisResult result)
+        {
+            await context.PostAsync("Certo, deixa eu pensar em alguma... (◔.◔)");
+        }
+
+        [LuisIntent("ContarPiada.SuperHeroi")]
+        public async Task ContarUmaPiadaDeSuperHeroi(IDialogContext context, LuisResult result)
+        {
+            await context.PostAsync("Certo, deixa eu pensar em alguma... (◔.◔)");
         }
     }
 }

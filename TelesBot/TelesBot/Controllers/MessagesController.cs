@@ -1,13 +1,13 @@
-﻿using System;
+﻿using Microsoft.Bot.Builder.Dialogs;
+using Microsoft.Bot.Builder.Luis;
+using Microsoft.Bot.Connector;
+using System;
 using System.Configuration;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
-using Microsoft.Bot.Builder.Dialogs;
-using Microsoft.Bot.Builder.Luis;
-using Microsoft.Bot.Connector;
 using TelesBot.CustomResponses;
 
 namespace TelesBot
@@ -32,11 +32,7 @@ namespace TelesBot
             switch (activity.Type)
             {
                 case ActivityTypes.ConversationUpdate:
-                    CreateIntroductionForNewUser(activity);
-
-                    // Handle conversation state changes, like members being added and removed
-                    // Use Activity.MembersAdded and Activity.MembersRemoved and Activity.Action for info
-                    // Not available in all channels
+                    IntroductBotForNewUsers(activity);
                     break;
 
                 case ActivityTypes.Message:
@@ -45,11 +41,6 @@ namespace TelesBot
                     var luisService = new LuisService(luisModel);
 
                     await Conversation.SendAsync(activity, () => new Dialogs.BotDialog(luisService));
-                    break;
-
-                case ActivityTypes.DeleteUserData:
-                    // Implement user deletion here
-                    // If we handle user deletion, return a real message
                     break;
 
                 case ActivityTypes.ContactRelationUpdate:
@@ -67,7 +58,7 @@ namespace TelesBot
             }
         }
 
-        private void CreateIntroductionForNewUser(Activity activity)
+        private void IntroductBotForNewUsers(Activity activity)
         {
             if (activity.MembersAdded != null && activity.MembersAdded.Any())
             {

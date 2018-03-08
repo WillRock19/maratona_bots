@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.27130.2036
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelesBot", "TelesBot\TelesBot.csproj", "{0AA2E031-857C-4E31-AF59-CBC00981C784}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JokeApi", "JokeApi\JokeApi.csproj", "{CD8AA672-A60C-4E90-930E-55958EF36EC2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{0AA2E031-857C-4E31-AF59-CBC00981C784}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0AA2E031-857C-4E31-AF59-CBC00981C784}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0AA2E031-857C-4E31-AF59-CBC00981C784}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CD8AA672-A60C-4E90-930E-55958EF36EC2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD8AA672-A60C-4E90-930E-55958EF36EC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD8AA672-A60C-4E90-930E-55958EF36EC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD8AA672-A60C-4E90-930E-55958EF36EC2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
