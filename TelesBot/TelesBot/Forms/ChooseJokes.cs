@@ -1,6 +1,9 @@
-﻿using Microsoft.Bot.Builder.Dialogs;
-using Microsoft.Bot.Builder.FormFlow;
+﻿using Microsoft.Bot.Builder.FormFlow;
+using Microsoft.Bot.Builder.Luis;
 using System;
+using System.Threading;
+using TelesBot.Dialogs;
+using TelesBot.Extensions;
 using TelesBot.Helpers;
 
 namespace TelesBot.Forms
@@ -10,20 +13,23 @@ namespace TelesBot.Forms
     public class ChooseJokes
     {
         [Describe("tipo de piada")]
-        public JokeType JokeType { get; set; }
+        public JokeCategory JokeType { get; set; }
 
         public static IForm<ChooseJokes> BuildForm()
         {
             var form = new FormBuilder<ChooseJokes>();
 
             form.Configuration.DefaultPrompt.ChoiceStyle = ChoiceStyleOptions.Buttons;
-            form.Configuration.Yes = new string[] { "sim", "yes", "s", "y", "yep", "é", "ye" };
+            form.Configuration.Yes = new string[] { "sim", "yes", "s", "y", "yep", "é", "ye", "eh" };
             form.Configuration.No  = new string[] { "não", "nao", "no", "not", "n", "nem" };
             form.Message("Beleza, agora você vai ter que me ajudar (∪ ◡ ∪)");
 
             form.OnCompletion(async (context, sugestao) =>
             {
-                await context.PostAsync("Ok, vamos procurar algo divertido...");
+                var message = context.MakeMessage();
+                message.Text = sugestao.JokeType.GetDescribe();
+
+                await context.Forward(new JokeDialog(), null, message, CancellationToken.None);
             });
 
             return form.Build();

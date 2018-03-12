@@ -6,14 +6,14 @@ namespace JokeApi.Repositories
 {
     public class JokeRepository : IJokeRepository
     {
-        private IJokeGenerator jokeGenerator;
+        private IJokeAdministrator _jokeAdministrator;
 
-        public JokeRepository(IJokeGenerator jokeGenerator)
+        public JokeRepository(IJokeAdministrator jokeAdministrator)
         {
-            this.jokeGenerator = jokeGenerator;
+            _jokeAdministrator = jokeAdministrator;
         }
 
         public Joke FindByCategory(JokeCategory jokeCategory) =>
-            jokeGenerator.FindByCategory(jokeCategory);
+            _jokeAdministrator.FindRandomJokeByCategory(jokeCategory);
     }
 }

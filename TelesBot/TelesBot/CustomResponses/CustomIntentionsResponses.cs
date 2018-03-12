@@ -9,12 +9,14 @@ namespace TelesBot.CustomResponses
     public class CustomIntentionsResponses
     {
         private int greetingsAnswered;
+        private int smallTalkAnswered;
         private QnaMakerHelper qnaMaker;
 
         public CustomIntentionsResponses()
         {
             qnaMaker = new QnaMakerHelper();
             greetingsAnswered = 0;
+            smallTalkAnswered = 0;
         }
 
 
@@ -41,6 +43,35 @@ namespace TelesBot.CustomResponses
             IncreaseGreetingsAnswered();
         }
 
+        public async Task RespondSmallTalk(IDialogContext context, string userText)
+        {
+            if (greetingsAnswered > 0)
+            {
+                await AnswerUser(context, "Ahhh... agora resolveu conversar direito? **( ͡° ͜ʖ ͡°)**");
+                await AnswerUser(context, "Tô bem sim... (vamos ver se continuo assim >.>). E você? ^^");
+                ClearGreetingsAnswered();
+            }
+            else
+            {
+                switch (smallTalkAnswered)
+                {
+                    case 0:
+                        await SearchAnswerInQnaMaker(context, userText);
+                        break;
+                    case 1:
+                        await AnswerUser(context, "Eu... tudo bem de novo... **( ͡° ͜ʖ ͡°)**");
+                        break;
+                    case 2:
+                        await AnswerUser(context, "Ah... gosta de ser espertalão, né? ¬¬");
+                        break;
+                    case 3:
+                        await AnswerUser(context, "Já brincou do jogo do silêncio?");
+                        break;
+                }
+                IncreaseSmallTalksAnswered();
+            }
+        }
+
         private async Task SearchAnswerInQnaMaker(IDialogContext context, string query)
         {
             var result = await qnaMaker.SearchForHighScoreAnswer(query);
@@ -51,5 +82,16 @@ namespace TelesBot.CustomResponses
 
         private void IncreaseGreetingsAnswered() => 
             greetingsAnswered++;
+
+        private void IncreaseSmallTalksAnswered() =>
+            smallTalkAnswered++;
+
+        private void ClearGreetingsAnswered() =>
+            greetingsAnswered = 0;
+
+        private void ClearSmallTalkAnswered() =>
+            smallTalkAnswered++;
+
+
     }
 }

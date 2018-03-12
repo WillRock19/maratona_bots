@@ -1,6 +1,5 @@
 ﻿using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.FormFlow;
-using Microsoft.Bot.Builder.Luis;
 using Microsoft.Bot.Builder.Luis.Models;
 using Microsoft.Bot.Connector;
 using System;
@@ -12,23 +11,15 @@ using TelesBot.Forms;
 namespace TelesBot.Dialogs
 {
     [Serializable]
-    public class BotDialog : LuisDialog<object>
+    public class BotDialog : BaseLuisDialog
     {
         private CustomIntentionsResponses customResponses;
         private Announcer botAnnounces;
 
-        public BotDialog(ILuisService service) : base(service)
+        public BotDialog()
         {
             customResponses = new CustomIntentionsResponses();
             botAnnounces = new Announcer();
-        }
-
-        [LuisIntent("")]
-        public async Task IntencaoNaoReconhecida(IDialogContext context, LuisResult result)
-        {
-            await context.PostAsync("**( ͡° ͜ʖ ͡°)** - Desculpe, mas não entendi o que você quis dizer");
-            await context.PostAsync("Lembre-se que sou um bot e meu conhecimento é limitado.");
-            context.Done<string>(null);
         }
 
         [LuisIntent("Ajuda")]
@@ -51,7 +42,7 @@ namespace TelesBot.Dialogs
         [LuisIntent("Usuario.Checando.Emocional.Bot")]
         public async Task TrocarIdeiaAsync(IDialogContext context, LuisResult result)
         {
-            await customResponses.RespondWithQnaMaker(context, result.Query);
+            await customResponses.RespondSmallTalk(context, result.Query);
             context.Done<string>(null);
         }
 
@@ -67,24 +58,6 @@ namespace TelesBot.Dialogs
         {
             var formDialog = new FormDialog<ChooseJokes>(new ChooseJokes(), ChooseJokes.BuildForm, FormOptions.PromptInStart);
             context.Call(formDialog, null);
-        }
-
-        [LuisIntent("ContarPiada.Tiozao")]
-        public async Task ContarUmaPiadaDeTiozao(IDialogContext context, LuisResult result)
-        {
-            await context.PostAsync("Certo, deixa eu pensar em alguma... (◔.◔)");
-        }
-
-        [LuisIntent("ContarPiada.HumorNegro")]
-        public async Task ContarUmaPiadaDeHumorNegro(IDialogContext context, LuisResult result)
-        {
-            await context.PostAsync("Certo, deixa eu pensar em alguma... (◔.◔)");
-        }
-
-        [LuisIntent("ContarPiada.SuperHeroi")]
-        public async Task ContarUmaPiadaDeSuperHeroi(IDialogContext context, LuisResult result)
-        {
-            await context.PostAsync("Certo, deixa eu pensar em alguma... (◔.◔)");
         }
     }
 }

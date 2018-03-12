@@ -4,13 +4,18 @@ namespace JokeApi.Helpers
 {
     public enum JokeCategory
     {
-        [Description("Humor Negro")]
-        BlackHumor,
-
-        [Description("Piadas de Tiozão")]
+        [Description("Tiozão")]
         DadJokes,
 
-        [Description("Piadas de Super-Heróis")]
-        SuperHeroes
+        [Description("Super-Heróis")]
+        SuperHeroes,
+
+        [Description("Nerd")]
+        Nerd,
+
+        [Description("Especial")]
+        Especial,
+
+        Undefined
     }
 }

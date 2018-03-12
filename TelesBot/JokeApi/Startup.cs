@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using JokeApi.Helpers;
 using JokeApi.Interfaces;
 using JokeApi.Repositories;
 using JokeApi.Services;
@@ -9,8 +6,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 
 namespace JokeApi
 {
@@ -30,7 +25,9 @@ namespace JokeApi
 
             // Repository and service's Injection
             services.AddTransient<IJokeRepository, JokeRepository>();
-            services.AddSingleton<IJokeGenerator, JokeGenerator>();
+            services.AddTransient<IJokeFileReader, JokeFileReader>();
+
+            services.AddSingleton<IJokeAdministrator, JokeAdministrator>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -6,7 +6,7 @@ namespace TelesBot.Extensions
 {
     public static class EnumExtensions
     {
-        public static string GetDescription(this Enum value)
+        public static string GetDescribe(this Enum value)
         {
             FieldInfo fi = value.GetType().GetField(value.ToString());
 

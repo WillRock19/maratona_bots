@@ -58,19 +58,25 @@ namespace TelesBot.CustomResponses
             new CardAction()
             {
                 Type = ActionTypes.PostBack,
-                Title = JokeType.DadJokes.GetDescription(),
+                Title = JokeCategory.Nerd.GetDescribe(),
+                Value = "Conte uma piada Nerd",
+            },
+            new CardAction()
+            {
+                Type = ActionTypes.PostBack,
+                Title = JokeCategory.Especial.GetDescribe(),
+                Value = "Conte uma especial Teles-bot"
+            },
+            new CardAction()
+            {
+                Type = ActionTypes.PostBack,
+                Title = JokeCategory.DadJokes.GetDescribe(),
                 Value = "Conte uma de tiozao",
             },
             new CardAction()
             {
                 Type = ActionTypes.PostBack,
-                Title = JokeType.BlackHumor.GetDescription(),
-                Value = "Conte uma de humor negro"
-            },
-            new CardAction()
-            {
-                Type = ActionTypes.PostBack,
-                Title = JokeType.SuperHeroes.GetDescription(),
+                Title = JokeCategory.SuperHeroes.GetDescribe(),
                 Value = "Conte uma de um super-herói",
             },
         };

@@ -1,36 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using JokeApi.Extensions;
+using JokeApi.Helpers;
 using JokeApi.Interfaces;
+using JokeApi.Model;
 using Microsoft.AspNetCore.Mvc;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace JokeApi.Controllers
 {
     [Route("api/[controller]")]
     public class JokeController : Controller
     {
-        private readonly IJokeRepository jokeRepository;
-
+        private readonly IJokeRepository _jokeRepository;
         public JokeController(IJokeRepository jokeRepository)
         {
-            this.jokeRepository = jokeRepository;
+            _jokeRepository = jokeRepository;
         }
 
-        // GET: api/<controller>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public Joke ByRandomCategory(string category)
         {
-            return new string[] { "value1", "value2" };
-        }
-
-        // GET api/<controller>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
+            return _jokeRepository.FindByCategory(category.ToEnumThatHasThisDescription<JokeCategory>());
         }
     }
 }
