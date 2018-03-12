@@ -24,7 +24,8 @@ namespace JokeApi.Services
 
             while ((line = file.ReadLine()) != null)
             {
-                result.Add(CreateJoke(line));
+                if (!string.IsNullOrEmpty(line))
+                    result.Add(CreateJoke(line));
             }
 
             file.Close();
