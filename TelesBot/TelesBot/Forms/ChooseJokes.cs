@@ -1,17 +1,15 @@
 ﻿using Microsoft.Bot.Builder.FormFlow;
-using Microsoft.Bot.Builder.Luis;
 using System;
-using System.Threading;
-using TelesBot.Dialogs;
 using TelesBot.Extensions;
 using TelesBot.Helpers;
 
 namespace TelesBot.Forms
 {
     [Serializable]
-    [Template(TemplateUsage.NotUnderstood, "Desculpe, \"**{0}**\" não é um tipo aceitável. Por favor, escolha uma das opções válidas (◑‿◐).")]
+    [Template(TemplateUsage.NotUnderstood, "Desculpe, \"**{0}**\" não é aceitável. Por favor, escolha uma opção válida (◑‿◐).")]
     public class ChooseJokes
     {
+        [Prompt("Qual {&} você quer ouvir? {||}")]
         [Describe("tipo de piada")]
         public JokeCategory JokeType { get; set; }
 
@@ -20,17 +18,16 @@ namespace TelesBot.Forms
             var form = new FormBuilder<ChooseJokes>();
 
             form.Configuration.DefaultPrompt.ChoiceStyle = ChoiceStyleOptions.Buttons;
-            form.Configuration.Yes = new string[] { "sim", "yes", "s", "y", "yep", "é", "ye", "eh" };
-            form.Configuration.No  = new string[] { "não", "nao", "no", "not", "n", "nem" };
-            form.Message("Beleza, agora você vai ter que me ajudar (∪ ◡ ∪)");
-
-            form.OnCompletion(async (context, sugestao) =>
-            {
-                var message = context.MakeMessage();
-                message.Text = sugestao.JokeType.GetDescribe();
-
-                await context.Forward(new JokeDialog(), null, message, CancellationToken.None);
-            });
+            form.Configuration.Yes = new string[] { "sim", "yes", "s", "y", "yep", "é", "ye", "eh", "claro", "yeap" };
+            form.Configuration.No = new string[] { "não", "nao", "no", "not", "n", "nem", "nop", "not", "errado" };
+            form.Message("Você vai ter que me ajudar (∪ ◡ ∪)")
+                .Field(nameof(JokeType))
+                .Confirm(async (state) =>
+                {
+                    var joke = state.JokeType.GetDescribe();
+                    var jokeMessage = joke.Equals(JokeCategory.DadJokes) || joke.Equals(JokeCategory.SuperHeroes) ? $"piada de **'{joke}'**" : $"piada **'{joke}'**";
+                    return new PromptAttribute($"Então, você quer ouvir uma {jokeMessage}? (◔,◔)");
+                });
 
             return form.Build();
         }

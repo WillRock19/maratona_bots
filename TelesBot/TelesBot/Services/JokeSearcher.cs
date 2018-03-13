@@ -7,9 +7,12 @@ using TelesBot.Model;
 
 namespace TelesBot.Services
 {
+    [Serializable]
     public class JokeSearcher
     {
         private string ApiUrl;
+
+        [NonSerialized]
         private HttpClient client;
 
         public JokeSearcher()

@@ -28,8 +28,7 @@ namespace TelesBot.CustomResponses
             Images = new List<CardImage>()
             {
                 new CardImage(botImageUrl, "Sou eu, Teles-Bot! =D")
-            },
-            Buttons = JokesICanMakeInButtons()
+            }
         };
 
         public HeroCard Help() => new HeroCard()
