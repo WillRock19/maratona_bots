@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Luis;
 using Microsoft.Bot.Builder.Luis.Models;
+using TelesBot.Helpers;
 
 namespace TelesBot.Dialogs
 {
@@ -12,20 +13,25 @@ namespace TelesBot.Dialogs
     {
         public BaseLuisDialog() : base(CreateNewService()) { }
 
-        [LuisIntent("None")]
+        [LuisIntent("")]
         public async Task NenhumaIntencao(IDialogContext context, LuisResult result)
         {
-            await context.PostAsync("Eiiita... eu não entendi o que você quis dizer **(╥_╥)**");
+            await context.PostAsync("Eiiita... eu não sei responder isso **(╥_╥)**");
             await context.PostAsync("Lembre-se que sou um bot e meu conhecimento é limitado. (͡๏̯ ͡๏)");
-            context.Wait(base.MessageReceived);
+
+            FinalizeContextWithFail(context);
         }
 
-        [LuisIntent("")]
-        public async Task IntencaoNaoReconhecida(IDialogContext context, LuisResult result)
+        protected void FinalizeContextWithFail(IDialogContext context)
         {
-            await context.PostAsync("Desculpe, viajei por um instante ✖_✖");
-            await context.PostAsync("Pode repetir com outras palavras? ლ(╹◡╹ლ)");
-            context.Wait(base.MessageReceived);
+            var actionCompleted = new OperationCompletedHelper(false);
+            context.Done(actionCompleted);
+        }
+
+        protected void FinalizeContextWithSuccess(IDialogContext context)
+        {
+            var operationCompleted = new OperationCompletedHelper(true);
+            context.Done(operationCompleted);
         }
 
         private static ILuisService CreateNewService()

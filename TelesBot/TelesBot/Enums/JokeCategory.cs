@@ -1,6 +1,6 @@
 ﻿using Microsoft.Bot.Builder.FormFlow;
 
-namespace TelesBot.Helpers
+namespace TelesBot.Enums
 {
     public enum JokeCategory
     {
@@ -10,7 +10,7 @@ namespace TelesBot.Helpers
 
         [Terms("Especial do tio Bot :D", "tio bot", "especial", ":D", "do tio bot", "do bot", "especial bot", "especial :D", "especial do tio")]
         [Describe("Especial do tio Bot :D")]
-        Especial,
+        Special,
 
         [Terms("tiozão", "tiozao", "tiosao", "de tio", "do tio", "tio")]
         [Describe("Tiozão")]

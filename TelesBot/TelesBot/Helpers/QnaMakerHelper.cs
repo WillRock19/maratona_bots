@@ -20,8 +20,7 @@ namespace TelesBot.Helpers
         {
             qnaKnowledgeBaseId = ConfigurationManager.AppSettings["QnaSubscriptionKey"];
             qnaSubscriptionKey = ConfigurationManager.AppSettings["QnaKnowledgeBaseId"];
-            defaultNotFindMessage = @"Eita... não sei como responder **(ಥ﹏ಥ)**.\n\n
-                                      Não quer tentar usar outras palavras?";
+            defaultNotFindMessage = @"Eita... não sei responder **(ಥ﹏ಥ)**. Não quer tentar usar outras palavras?";
             precisionScore = 0.40;
 
             CreateService();

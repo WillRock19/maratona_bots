@@ -1,7 +1,7 @@
 ﻿using Microsoft.Bot.Builder.FormFlow;
 using System;
 using TelesBot.Extensions;
-using TelesBot.Helpers;
+using TelesBot.Enums;
 
 namespace TelesBot.Forms
 {

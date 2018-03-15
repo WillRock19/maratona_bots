@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using TelesBot.Extensions;
-using TelesBot.Helpers;
+using TelesBot.Enums;
 
 namespace TelesBot.CustomResponses
 {
@@ -63,7 +63,7 @@ namespace TelesBot.CustomResponses
             new CardAction()
             {
                 Type = ActionTypes.PostBack,
-                Title = JokeCategory.Especial.GetDescribe(),
+                Title = JokeCategory.Special.GetDescribe(),
                 Value = "Conte uma especial Teles-bot"
             },
             new CardAction()

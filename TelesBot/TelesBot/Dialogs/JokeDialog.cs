@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Luis.Models;
-using Microsoft.Bot.Connector;
+using TelesBot.Enums;
+using TelesBot.Extensions;
 using TelesBot.Services;
 
 namespace TelesBot.Dialogs
@@ -24,7 +24,9 @@ namespace TelesBot.Dialogs
         public async Task ContarUmaPiadaDeTiozao(IDialogContext context, LuisResult result)
         {
             await context.PostAsync("Certo, deixa eu pensar em alguma... (◔.◔)");
-            jokeFinded = await jokeSearcher.GetJokeByCategory(result.Query);
+
+            var category = result.Query.ToEnumWithThisDescribe<JokeCategory>();
+            jokeFinded = await jokeSearcher.GetJokeByCategory(category);
 
             if (jokeFinded.Exists())
             {
@@ -40,20 +42,19 @@ namespace TelesBot.Dialogs
             }
         }
 
-        [LuisIntent("ContarPiada.SuperHeroi")]
+        [LuisIntent("ContarPiada.Herois")]
         public async Task ContarUmaPiadaDeSuperHeroi(IDialogContext context, LuisResult result)
         {
-            await context.PostAsync("Beleza então. Manda uma foto de super-herói que eu conto a piada! ^^");
-            await context.PostAsync("Olha os que eu conheço: " +
+            await context.PostAsync("Beleza então. Manda o símbolo de um desses super-heróis que eu conto a piada:" +
+                    "\n\n\r\t" +
                     "* **Batman**;" + 
                     "* **Demolidor**;" +
                     "* **Superman**;");
 
-            //context.Wait(MakeSuperHeroeJoke);
-
+            context.Wait(GetImageAndMakeHeroJoke);
         }
 
-        private async Task MakeSuperHeroeJoke(IDialogContext context, LuisResult result)
+        private async Task GetImageAndMakeHeroJoke(IDialogContext context, IAwaitable<object> result)
         {
 
         }
@@ -63,7 +64,7 @@ namespace TelesBot.Dialogs
             var userResponse = await result;
             await context.PostAsync(jokeFinded.Conclusion);
 
-            context.Done<string>(null);
+            FinalizeContextWithSuccess(context);
         }
     }
 }

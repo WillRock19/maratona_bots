@@ -10,11 +10,14 @@ namespace TelesBot.CustomResponses
     {
         private int greetingsAnswered;
         private int smallTalkAnswered;
+        private bool userTriedToBeTroll;
+
         private QnaMakerHelper qnaMaker;
 
         public CustomIntentionsResponses()
         {
             qnaMaker = new QnaMakerHelper();
+            userTriedToBeTroll = false;
             greetingsAnswered = 0;
             smallTalkAnswered = 0;
         }
@@ -91,7 +94,5 @@ namespace TelesBot.CustomResponses
 
         private void ClearSmallTalkAnswered() =>
             smallTalkAnswered++;
-
-
     }
 }

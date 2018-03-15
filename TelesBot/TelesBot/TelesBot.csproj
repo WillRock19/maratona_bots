@@ -129,17 +129,20 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\MessagesController.cs" />
     <Compile Include="CustomResponses\Announcer.cs" />
+    <Compile Include="CustomResponses\SmartAssResponses.cs" />
     <Compile Include="Dialogs\BaseLuisDialog.cs" />
     <Compile Include="Dialogs\BotDialog.cs" />
     <Compile Include="Dialogs\JokeDialog.cs" />
     <Compile Include="Dialogs\RootDialog.cs" />
     <Compile Include="Enums\WishForAnotherJoke.cs" />
     <Compile Include="Extensions\EnumExtensions.cs" />
+    <Compile Include="Extensions\StringExtension.cs" />
     <Compile Include="Forms\ChooseJokes.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Helpers\JokeCategory.cs" />
+    <Compile Include="Enums\JokeCategory.cs" />
+    <Compile Include="Helpers\OperationCompletedHelper.cs" />
     <Compile Include="Helpers\QnaMakerHelper.cs" />
     <Compile Include="Model\Joke.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

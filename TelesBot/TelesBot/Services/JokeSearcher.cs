@@ -3,6 +3,8 @@ using System;
 using System.Configuration;
 using System.Net.Http;
 using System.Threading.Tasks;
+using TelesBot.Enums;
+using TelesBot.Extensions;
 using TelesBot.Model;
 
 namespace TelesBot.Services
@@ -23,9 +25,9 @@ namespace TelesBot.Services
             client.BaseAddress = new Uri(ApiUrl);
         }
 
-        public async Task<Joke> GetJokeByCategory(string category)
+        public async Task<Joke> GetJokeByCategory(JokeCategory category)
         {
-            var urlWithParameters = $"{ApiUrl}?category={category}";
+            var urlWithParameters = $"{ApiUrl}?category={category.ToString()}";
             var response = await client.GetAsync(urlWithParameters);
 
             if (!response.IsSuccessStatusCode)

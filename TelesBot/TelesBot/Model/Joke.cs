@@ -1,5 +1,5 @@
 ﻿using System;
-using TelesBot.Helpers;
+using TelesBot.Enums;
 
 namespace TelesBot.Model
 {
