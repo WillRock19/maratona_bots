@@ -1,6 +1,7 @@
 ﻿using JokeApi.Helpers;
 using JokeApi.Interfaces;
 using JokeApi.Model;
+using System.Threading.Tasks;
 
 namespace JokeApi.Repositories
 {
@@ -13,7 +14,7 @@ namespace JokeApi.Repositories
             _jokeAdministrator = jokeAdministrator;
         }
 
-        public Joke FindByCategory(JokeCategory jokeCategory) =>
-            _jokeAdministrator.FindRandomJokeByCategory(jokeCategory);
+        public async Task<Joke> FindByCategoryAsync(JokeCategory jokeCategory) =>
+            await _jokeAdministrator.FindRandomJokeByCategory(jokeCategory);
     }
 }

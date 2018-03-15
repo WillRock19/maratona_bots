@@ -4,8 +4,8 @@ using System.Threading.Tasks;
 
 namespace JokeApi.Interfaces
 {
-    public interface IJokeFileReader
+    public interface IGifsFileReader
     {
-        Task<IEnumerable<Joke>> GetJokesAsync();
+        Task<IEnumerable<GifLinks>> GetGifLinksAsync();
     }
 }

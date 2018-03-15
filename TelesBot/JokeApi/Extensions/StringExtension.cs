@@ -6,7 +6,7 @@ namespace JokeApi.Extensions
 {
     public static class StringExtension
     {
-        public static T ToEnumThatHasThisDescription<T>(this string description)
+        public static T ToEnumWWithThisDescription<T>(this string description)
         {
             MemberInfo[] fis = typeof(T).GetFields();
 
@@ -18,7 +18,7 @@ namespace JokeApi.Extensions
                     return (T)Enum.Parse(typeof(T), fi.Name);
             }
 
-            throw new Exception("Not found");
+            throw new Exception("We could not find the Enum for this description: " + description);
         }
     }
 }

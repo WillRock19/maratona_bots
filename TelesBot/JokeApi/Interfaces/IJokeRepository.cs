@@ -1,10 +1,11 @@
 ﻿using JokeApi.Helpers;
 using JokeApi.Model;
+using System.Threading.Tasks;
 
 namespace JokeApi.Interfaces
 {
     public interface IJokeRepository
     {
-        Joke FindByCategory(JokeCategory jokeCategory);
+        Task<Joke> FindByCategoryAsync(JokeCategory jokeCategory);
     }
 }

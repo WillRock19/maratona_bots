@@ -1,8 +1,8 @@
-﻿using JokeApi.Extensions;
-using JokeApi.Helpers;
+﻿using JokeApi.Helpers;
 using JokeApi.Interfaces;
-using JokeApi.Model;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Threading.Tasks;
 
 namespace JokeApi.Controllers
 {
@@ -16,9 +16,22 @@ namespace JokeApi.Controllers
         }
 
         [HttpGet]
-        public Joke ByRandomCategory(string category)
+        public async Task<JsonResult> Get(JokeCategory? category)
         {
-            return _jokeRepository.FindByCategory(category.ToEnumThatHasThisDescription<JokeCategory>());
+            try
+            {
+                if (category.HasValue)
+                {
+                    var joke = await _jokeRepository.FindByCategoryAsync(category.Value);
+                    return new JsonResult(joke);
+                    //return JsonConvert.SerializeObject(joke, new JsonSerializerSettings { StringEscapeHandling = StringEscapeHandling.EscapeNonAscii }); Pode ser usado também
+                }
+                else
+                    throw new ArgumentNullException("Category", "Nenhuma categoria válida informada!");
+            }
+            catch (Exception e) {
+                return new JsonResult("Uma exceção ocorreu..." + e.Message);
+            }
         }
     }
 }

@@ -1,34 +1,26 @@
 ﻿using JokeApi.Interfaces;
 using JokeApi.Model;
 using System.Collections.Generic;
-using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace JokeApi.Services
 {
     public class JokeFileReader : IJokeFileReader
     {
-        private readonly string _filePath;
-        private readonly string _fileName;
+        private readonly FileReader fileReader;
 
         public JokeFileReader()
         {
-            _fileName = "jokes.txt";
-            _filePath = $"{Directory.GetCurrentDirectory()}\\Files\\{_fileName}";
+            fileReader = new FileReader("jokes.txt");
         }
 
-        public IEnumerable<Joke> GetJokes()
+        public async Task<IEnumerable<Joke>> GetJokesAsync()
         {
-            var file = new StreamReader(_filePath);
-            var line = string.Empty;
+            var content = await fileReader.GetContent();
             var result = new List<Joke>();
 
-            while ((line = file.ReadLine()) != null)
-            {
-                if (!string.IsNullOrEmpty(line))
-                    result.Add(CreateJoke(line));
-            }
-
-            file.Close();
+            content.ToList().ForEach(fileLine => result.Add(CreateJoke(fileLine)));
             return result;
         }
 

@@ -9,6 +9,7 @@ namespace JokeApi.Model
         public string Conclusion { get; set; }
         public JokeCategory Category { get; set; }
         public string CategoryDescription { get; set; }
+        public string GifUrl { get; set; }
 
         public Joke() { }
 
@@ -17,7 +18,7 @@ namespace JokeApi.Model
             Introduction = introduction;
             Conclusion = conclusion;
             CategoryDescription = category;
-            Category = !string.IsNullOrEmpty(category) ? category.ToEnumThatHasThisDescription<JokeCategory>() : JokeCategory.Undefined;
+            Category = !string.IsNullOrEmpty(category) ? category.ToEnumWWithThisDescription<JokeCategory>() : JokeCategory.Undefined;
         }
     }
 }
