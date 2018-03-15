@@ -31,8 +31,7 @@ namespace TelesBot.Services
             if (!response.IsSuccessStatusCode)
                 return new Joke();
 
-            var joke = JsonConvert.DeserializeObject<Joke>(await response.Content.ReadAsAsync<string>());
-            return joke;
+            return JsonConvert.DeserializeObject<Joke>(await response.Content.ReadAsStringAsync());
         }
     }
 }

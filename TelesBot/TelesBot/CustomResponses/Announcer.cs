@@ -24,7 +24,7 @@ namespace TelesBot.CustomResponses
         public HeroCard GenerateIntroduction() => new HeroCard()
         {
             Title = myNameIs,
-            Text = "Sou um robô comediante! ¯| _(ツ)_ /¯. Eu te faço rir sobre:",
+            Text = "Sou um robô comediante xD. Eu vivo pra fazer rir! ¯| _(ツ)_ /¯",
             Images = new List<CardImage>()
             {
                 new CardImage(botImageUrl, "Sou eu, Teles-Bot! =D")

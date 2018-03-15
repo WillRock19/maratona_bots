@@ -1,7 +1,9 @@
-﻿using TelesBot.Helpers;
+﻿using System;
+using TelesBot.Helpers;
 
 namespace TelesBot.Model
 {
+    [Serializable]
     public class Joke
     {
         public string Introduction { get; set; }

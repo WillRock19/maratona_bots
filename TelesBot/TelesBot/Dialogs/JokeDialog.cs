@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Luis.Models;
+using Microsoft.Bot.Connector;
 using TelesBot.Services;
 
 namespace TelesBot.Dialogs
@@ -11,6 +13,7 @@ namespace TelesBot.Dialogs
     public class JokeDialog : BaseLuisDialog
     {
         private JokeSearcher jokeSearcher;
+        private Model.Joke jokeFinded;
 
         public JokeDialog()
         {
@@ -21,8 +24,20 @@ namespace TelesBot.Dialogs
         public async Task ContarUmaPiadaDeTiozao(IDialogContext context, LuisResult result)
         {
             await context.PostAsync("Certo, deixa eu pensar em alguma... (◔.◔)");
+            jokeFinded = await jokeSearcher.GetJokeByCategory(result.Query);
 
-            //jokeSearcher.GetJokeByCategory();
+            if (jokeFinded.Exists())
+            {
+                await context.PostAsync(jokeFinded.Introduction);
+                context.Wait(GetUserResponseAndFinishJoke);
+            }
+            else
+            {
+                await context.PostAsync("Cara... não consegui pensar em nada x.x");
+                await context.PostAsync("Me desculpa...");
+
+                context.Done(context.MakeMessage());
+            }
         }
 
         [LuisIntent("ContarPiada.SuperHeroi")]
@@ -41,6 +56,14 @@ namespace TelesBot.Dialogs
         private async Task MakeSuperHeroeJoke(IDialogContext context, LuisResult result)
         {
 
+        }
+
+        private async Task GetUserResponseAndFinishJoke(IDialogContext context, IAwaitable<object> result)
+        {
+            var userResponse = await result;
+            await context.PostAsync(jokeFinded.Conclusion);
+
+            context.Done<string>(null);
         }
     }
 }

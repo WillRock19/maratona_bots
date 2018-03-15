@@ -4,9 +4,11 @@ using Microsoft.Bot.Builder.Luis.Models;
 using Microsoft.Bot.Connector;
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using TelesBot.CustomResponses;
+using TelesBot.Enums;
 using TelesBot.Extensions;
 using TelesBot.Forms;
 
@@ -54,7 +56,12 @@ namespace TelesBot.Dialogs
         }
 
         [LuisIntent("ContarPiada")]
-        public async Task ContarUmaPiada(IDialogContext context, LuisResult result)
+        public async Task UsuarioQuerOuvirUmaPiada(IDialogContext context, LuisResult result)
+        {
+            await TellOneJoke(context);
+        }
+
+        private async Task TellOneJoke(IDialogContext context)
         {
             var formDialog = new FormDialog<ChooseJokes>(new ChooseJokes(), ChooseJokes.BuildForm, FormOptions.PromptInStart);
             context.Call(formDialog, ExecuteAfterForm);
@@ -66,12 +73,34 @@ namespace TelesBot.Dialogs
             var message = context.MakeMessage();
 
             message.Text = data.JokeType.GetDescribe();           
-            await context.Forward(new JokeDialog(), ResumeAfterJokeDialog, message, CancellationToken.None);
+            await context.Forward(new JokeDialog(), ExecuteAfterJokeDialog, message, CancellationToken.None);
         }
 
-        private async Task ResumeAfterJokeDialog(IDialogContext context, IAwaitable<object> result)
+        private async Task ExecuteAfterJokeDialog(IDialogContext context, IAwaitable<object> result)
         {
-            var ishi = await result;
+            var operationResult = await result;
+
+            PromptDialog.Choice(
+                context: context,
+                resume: CheckUserWantsAnotherJoke,
+                options: (IEnumerable<WishForAnotherJoke>)Enum.GetValues(typeof(WishForAnotherJoke)),
+                prompt: "E ai, quer ouvir mais uma?",
+                retry: "Opção escolhida inválida. Favor, escolher uma das disponíveis.",
+                promptStyle: PromptStyle.Auto                
+            );
+        }
+
+        private async Task CheckUserWantsAnotherJoke(IDialogContext context, IAwaitable<WishForAnotherJoke> result)
+        {
+            var wishAnotherJoke = await result;
+
+            if (wishAnotherJoke.Equals(WishForAnotherJoke.No))
+            {
+                await context.PostAsync("Beleza então... qualquer coisa, estarei aqui ^^");
+                context.Done<string>(null);
+            }
+            else
+                await TellOneJoke(context);
         }
     }
 }
