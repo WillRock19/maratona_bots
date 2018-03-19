@@ -4,11 +4,9 @@ using Microsoft.Bot.Builder.Luis.Models;
 using Microsoft.Bot.Connector;
 using System;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using TelesBot.CustomResponses;
-using TelesBot.Enums;
 using TelesBot.Extensions;
 using TelesBot.Forms;
 using TelesBot.Helpers;
@@ -37,17 +35,25 @@ namespace TelesBot.Dialogs
             await context.PostAsync(message);
         }
 
-        [LuisIntent("Cumprimentar")]
-        public async Task CumprimentoAsync(IDialogContext context, LuisResult result)
+        [LuisIntent("Saudacao")]
+        public async Task SaudacaoAsync(IDialogContext context, LuisResult result)
         {
-            await customResponses.RespondGreeting(context, result.Query);
+            var response = await customResponses.RespondGreeting(result.Query);
+
+            if (!string.IsNullOrWhiteSpace(response))
+                await context.PostAsync(response);
+
             FinalizeContextWithSuccess(context);
         }
 
-        [LuisIntent("Usuario.Checando.Emocional.Bot")]
-        public async Task TrocarIdeiaAsync(IDialogContext context, LuisResult result)
+        [LuisIntent("Checar.Emocional.Bot")]
+        public async Task ChecandoEmocionalBotAsync(IDialogContext context, LuisResult result)
         {
-            await customResponses.RespondSmallTalk(context, result.Query);
+            var response = customResponses.RespondSmallTalk();
+
+            if(!string.IsNullOrWhiteSpace(response))
+                await context.PostAsync(response);
+
             FinalizeContextWithSuccess(context);
         }
 
@@ -91,26 +97,28 @@ namespace TelesBot.Dialogs
 
         private async Task AskUserForAnotherJoke(IDialogContext context)
         {
-            PromptDialog.Choice(
+            PromptDialog.Confirm(
                     context: context,
                     resume: CheckUserWantsAnotherJoke,
-                    options: new List<string>() { "Sim", "Não" },
-                    prompt: "E ai, quer ouvir outra?",
+                    prompt: "Quer ouvir outra...?      ° ͜ʖ﻿ ͡°",
                     retry: "Opção escolhida inválida. Favor, escolher uma das disponíveis.",
                     promptStyle: PromptStyle.Auto
                 );
         }
 
-        private async Task CheckUserWantsAnotherJoke(IDialogContext context, IAwaitable<string> result)
+        private async Task CheckUserWantsAnotherJoke(IDialogContext context, IAwaitable<bool> result)
         {
             var wishAnotherJoke = await result;
 
-            if (wishAnotherJoke.Equals("não", StringComparison.InvariantCultureIgnoreCase))
+            if (!wishAnotherJoke)
             {
-                await context.PostAsync("Beleza então... qualquer coisa, estarei aqui ^^");
-                context.Done<string>(null);
+                await SendEndConversationMessage(context);
+                FinalizeContextWithSuccess(context);
             }
             else await TellOneJoke(context);
         }
+
+        private async Task SendEndConversationMessage(IDialogContext context) =>
+            await context.PostAsync("Beleza então... qualquer coisa, estarei aqui ^^");
     }
 }

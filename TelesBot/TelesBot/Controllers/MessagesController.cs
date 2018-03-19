@@ -37,7 +37,16 @@ namespace TelesBot
                     break;
 
                 case ActivityTypes.Message:
-                    await Conversation.SendAsync(activity, () => new Dialogs.BotDialog());
+
+                    try
+                    {
+                        await Conversation.SendAsync(activity, () => new Dialogs.BotDialog());
+                    }
+                    catch (Exception e)
+                    {
+                        var text = e.Message;
+                    }
+
                     break;
 
                 case ActivityTypes.ContactRelationUpdate:

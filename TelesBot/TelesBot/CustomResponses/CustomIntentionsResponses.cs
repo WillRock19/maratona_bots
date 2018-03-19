@@ -1,5 +1,6 @@
 ﻿using Microsoft.Bot.Builder.Dialogs;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using TelesBot.Helpers;
 
@@ -12,76 +13,76 @@ namespace TelesBot.CustomResponses
         private int smallTalkAnswered;
         private bool userTriedToBeTroll;
 
+        private BotCustomResponses customResponses;
+
         private QnaMakerHelper qnaMaker;
 
         public CustomIntentionsResponses()
         {
             qnaMaker = new QnaMakerHelper();
+            customResponses = new BotCustomResponses();
+
             userTriedToBeTroll = false;
             greetingsAnswered = 0;
             smallTalkAnswered = 0;
         }
 
-
         public async Task RespondWithQnaMaker(IDialogContext context, string query) => 
-            await SearchAnswerInQnaMaker(context, query);
+            await SearchAnswerInQnaMaker(query);
 
-        public async Task RespondGreeting(IDialogContext context, string greeting)
+        public async Task<string> RespondGreeting(string greeting)
         {
-            switch (greetingsAnswered)
-            {
-                case 0:
-                    await SearchAnswerInQnaMaker(context, greeting);
-                    break;
-                case 1:
-                    await AnswerUser(context, "Hã... é... 'Oi' de novo... **( ͡° ͜ʖ ͡°)**");
-                    break;
-                case 2:
-                    await AnswerUser(context, "Ok... agora você só quer me provocar, né? ¬¬");
-                    break;
-                case 3:
-                    await AnswerUser(context, "Ei, já brincou do jogo do silêncio?");
-                    break;
-            }
+            var response = !userTriedToBeTroll ? 
+                            await respondGreetingsPatiently(greeting) : 
+                            respondGreetingsImpatient();
+
             IncreaseGreetingsAnswered();
+            CheckIfBotLosePatienceWithUser();
+
+            return response;
         }
 
-        public async Task RespondSmallTalk(IDialogContext context, string userText)
+        public string RespondSmallTalk()
         {
-            if (greetingsAnswered > 0)
-            {
-                await AnswerUser(context, "Ahhh... agora resolveu conversar direito? **( ͡° ͜ʖ ͡°)**");
-                await AnswerUser(context, "Tô bem sim... (vamos ver se continuo assim >.>). E você? ^^");
-                ClearGreetingsAnswered();
-            }
-            else
-            {
-                switch (smallTalkAnswered)
-                {
-                    case 0:
-                        await SearchAnswerInQnaMaker(context, userText);
-                        break;
-                    case 1:
-                        await AnswerUser(context, "Eu... tudo bem de novo... **( ͡° ͜ʖ ͡°)**");
-                        break;
-                    case 2:
-                        await AnswerUser(context, "Ah... gosta de ser espertalão, né? ¬¬");
-                        break;
-                    case 3:
-                        await AnswerUser(context, "Já brincou do jogo do silêncio?");
-                        break;
-                }
-                IncreaseSmallTalksAnswered();
-            }
+            var response = !userTriedToBeTroll ?
+                            respondSmallTalkPatiently() :
+                            respondSmallTalkImpatient();
+
+            ReduceGreetingsAnsweredToOne();
+            IncreaseSmallTalksAnswered();
+            return response;
         }
 
-        private async Task SearchAnswerInQnaMaker(IDialogContext context, string query)
+        private async Task<string> respondGreetingsPatiently(string greetings)
         {
-            var result = await qnaMaker.SearchForHighScoreAnswer(query);
-            await AnswerUser(context, result);
+            if (!firstGreetingAnswered())
+                return customResponses.Greetings()
+                        .ElementAtOrDefault(greetingsAnswered) 
+                        ?? string.Empty;
+
+            return await SearchAnswerInQnaMaker(greetings);
         }
 
-        private async Task AnswerUser(IDialogContext context, string answer) => await context.PostAsync(answer);
+        private string respondGreetingsImpatient() => customResponses
+                                                        .GreetingsAfterTrolling()
+                                                        .ElementAtOrDefault(greetingsAnswered) 
+                                                        ?? string.Empty;
+
+        private string respondSmallTalkPatiently() => 
+                    customResponses.SmallTalk()
+                                   .ElementAtOrDefault(smallTalkAnswered) 
+                                   ?? string.Empty;
+
+        private string respondSmallTalkImpatient() =>
+                    customResponses.SmallTalkAfterTrolling()
+                                   .ElementAtOrDefault(smallTalkAnswered)
+                                   ?? string.Empty;
+
+        private async Task<string> SearchAnswerInQnaMaker(string query) => 
+            await qnaMaker.SearchForHighScoreAnswer(query);
+
+        private bool firstGreetingAnswered() => 
+            greetingsAnswered == 0;
 
         private void IncreaseGreetingsAnswered() => 
             greetingsAnswered++;
@@ -89,10 +90,13 @@ namespace TelesBot.CustomResponses
         private void IncreaseSmallTalksAnswered() =>
             smallTalkAnswered++;
 
-        private void ClearGreetingsAnswered() =>
-            greetingsAnswered = 0;
+        private void ReduceGreetingsAnsweredToOne()
+        {
+            if(greetingsAnswered > 1 && smallTalkAnswered < 2)
+                greetingsAnswered = 1;
+        }
 
-        private void ClearSmallTalkAnswered() =>
-            smallTalkAnswered++;
+        private void CheckIfBotLosePatienceWithUser() => 
+            userTriedToBeTroll = greetingsAnswered > 3;
     }
 }

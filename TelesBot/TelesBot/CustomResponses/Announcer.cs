@@ -39,7 +39,6 @@ namespace TelesBot.CustomResponses
             {
                 new CardImage(botPorposeUrl, "Então tu quer saber quem sou eu? (͡๏̯ ͡๏)")
             },
-            Buttons = JokesICanMakeInButtons()
         };
 
         public HeroCard JokesICanMake() => new HeroCard()
@@ -64,19 +63,19 @@ namespace TelesBot.CustomResponses
             {
                 Type = ActionTypes.PostBack,
                 Title = JokeCategory.Special.GetDescribe(),
-                Value = "Conte uma especial Teles-bot"
+                Value = "Conte uma piada Especial"
             },
             new CardAction()
             {
                 Type = ActionTypes.PostBack,
                 Title = JokeCategory.DadJokes.GetDescribe(),
-                Value = "Conte uma de tiozao",
+                Value = "Conte uma piada de Tiozao",
             },
             new CardAction()
             {
                 Type = ActionTypes.PostBack,
                 Title = JokeCategory.SuperHeroes.GetDescribe(),
-                Value = "Conte uma de um super-herói",
+                Value = "Conte uma piada de um Super-herói",
             },
         };
     }

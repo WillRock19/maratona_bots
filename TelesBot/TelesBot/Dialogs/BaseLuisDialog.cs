@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Luis;
 using Microsoft.Bot.Builder.Luis.Models;
+using Microsoft.Bot.Connector;
 using TelesBot.Helpers;
 
 namespace TelesBot.Dialogs
@@ -22,6 +23,15 @@ namespace TelesBot.Dialogs
             FinalizeContextWithFail(context);
         }
 
+        [LuisIntent("None")]
+        public async Task SeiLa(IDialogContext context, LuisResult result)
+        {
+            await context.PostAsync("Eiiita... eu não sei responder isso **(╥_╥)**");
+            await context.PostAsync("Lembre-se que sou um bot e meu conhecimento é limitado. (͡๏̯ ͡๏)");
+
+            FinalizeContextWithFail(context);
+        }
+
         protected void FinalizeContextWithFail(IDialogContext context)
         {
             var actionCompleted = new OperationCompletedHelper(false);
@@ -32,6 +42,14 @@ namespace TelesBot.Dialogs
         {
             var operationCompleted = new OperationCompletedHelper(true);
             context.Done(operationCompleted);
+        }
+
+        protected async Task SendIsTypingMessage(IDialogContext context)
+        {
+            var reply = context.MakeMessage();
+            reply.Type = ActivityTypes.Typing;
+
+            await context.PostAsync(reply);
         }
 
         private static ILuisService CreateNewService()

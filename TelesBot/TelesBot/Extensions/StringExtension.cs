@@ -6,7 +6,7 @@ namespace TelesBot.Extensions
 {
     public static class StringExtension
     {
-        public static T ToEnumWithThisDescribe<T>(this string describe)
+        public static T ToEnumByDescribe<T>(this string describe)
         {
             MemberInfo[] fis = typeof(T).GetFields();
 
@@ -18,7 +18,7 @@ namespace TelesBot.Extensions
                     return (T)Enum.Parse(typeof(T), fi.Name);
             }
 
-            throw new Exception("Not found the describe: " + describe);
+            throw new Exception("Describe not found: " + describe);
         }
     }
 }

@@ -129,7 +129,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\MessagesController.cs" />
     <Compile Include="CustomResponses\Announcer.cs" />
-    <Compile Include="CustomResponses\SmartAssResponses.cs" />
+    <Compile Include="CustomResponses\BotCustomResponses.cs" />
     <Compile Include="Dialogs\BaseLuisDialog.cs" />
     <Compile Include="Dialogs\BotDialog.cs" />
     <Compile Include="Dialogs\JokeDialog.cs" />
@@ -142,12 +142,16 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Enums\JokeCategory.cs" />
+    <Compile Include="Helpers\CardGeneratorHelper.cs" />
     <Compile Include="Helpers\OperationCompletedHelper.cs" />
     <Compile Include="Helpers\QnaMakerHelper.cs" />
     <Compile Include="Model\Joke.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="CustomResponses\CustomIntentionsResponses.cs" />
+    <Compile Include="Services\CognitiveServicesRequestHandler.cs" />
     <Compile Include="Services\JokeSearcher.cs" />
+    <Compile Include="Services\UserInputTranslator.cs" />
+    <Compile Include="Services\UserMoodInterpretator.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config">
