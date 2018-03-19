@@ -53,6 +53,16 @@ namespace TelesBot.CustomResponses
             return response;
         }
 
+        public string RespondUserPositiveStateOfMind()
+        {
+            return string.Empty;
+        }
+
+        public string RespondUserNegativeStateOfMind()
+        {
+            return "Poxa... não fica assim não! ఠ_ఠ";
+        }
+
         private async Task<string> respondGreetingsPatiently(string greetings)
         {
             if (!firstGreetingAnswered())

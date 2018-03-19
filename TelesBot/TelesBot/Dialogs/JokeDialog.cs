@@ -74,8 +74,8 @@ namespace TelesBot.Dialogs
             var userResponse = await result;
             var message = context.MakeMessage();
 
-            message.Text = $"**'{jokeFinded.Conclusion}'**";
-            message.Attachments.Add(cardGenerator.SimpleAnimationCard("", "https://media1.tenor.com/images/2e678e259bc84c7729a3465ce79c4929/tenor.gif?itemid=5908888"));
+            message.Text = $"**'{jokeFinded.Conclusion}'**"; 
+            message.Attachments.Add(cardGenerator.SimpleAnimationCard("", jokeFinded.GifUrl));
 
             await context.PostAsync(message);
             FinalizeContextWithSuccess(context);
