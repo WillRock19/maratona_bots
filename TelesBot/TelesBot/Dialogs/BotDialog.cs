@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using TelesBot.CustomResponses;
 using TelesBot.Extensions;
 using TelesBot.Forms;
-using TelesBot.Helpers;
 
 namespace TelesBot.Dialogs
 {
@@ -43,7 +42,7 @@ namespace TelesBot.Dialogs
             if (!string.IsNullOrWhiteSpace(response))
                 await context.PostAsync(response);
 
-            FinalizeContextWithSuccess(context);
+            FinalizeContextWithDone(context);
         }
 
         [LuisIntent("Checar.Emocional.Bot")]
@@ -54,7 +53,7 @@ namespace TelesBot.Dialogs
             if(!string.IsNullOrWhiteSpace(response))
                 await context.PostAsync(response);
 
-            FinalizeContextWithSuccess(context);
+            FinalizeContextWithDone(context);
         }
 
         [LuisIntent("Emocional.Usuario.Negativo")]
@@ -102,12 +101,16 @@ namespace TelesBot.Dialogs
 
         private async Task ExecuteAfterJokeDialog(IDialogContext context, IAwaitable<object> result)
         {
-            var operation = (OperationCompletedHelper)(await result);
-
-            if (operation.WasSuccessfull())
+            try
+            {
+                var operationResult = await result;
                 await AsksUserForAJoke(context);
-            else
+            }
+            catch(Exception e)
+            {
+                await context.PostAsync(e.Message);
                 context.Wait(MessageReceived);
+            }
         }
 
         private async Task AsksUserForAJoke(IDialogContext context)
@@ -127,13 +130,13 @@ namespace TelesBot.Dialogs
 
             if (!wishAJoke)
             {
-                await SendEndConversationMessage(context);
-                FinalizeContextWithSuccess(context);
+                await SendConversationEndMessage(context);
+                FinalizeContextWithDone(context);
             }
             else await TellOneJoke(context);
         }
 
-        private async Task SendEndConversationMessage(IDialogContext context) =>
+        private async Task SendConversationEndMessage(IDialogContext context) =>
             await context.PostAsync("Beleza então... qualquer coisa, estarei aqui ^^");
     }
 }

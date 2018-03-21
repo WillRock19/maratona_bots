@@ -78,7 +78,7 @@ namespace TelesBot
                     var reply = activity.CreateReply();
 
                     reply.Attachments.Add(announcer.GenerateIntroduction().ToAttachment());
-                    connector.Conversations.ReplyToActivityAsync(reply);
+                    connector.Conversations.SendToConversationAsync(reply);
                 }
             }
         }

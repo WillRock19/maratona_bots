@@ -15,34 +15,22 @@ namespace TelesBot.Dialogs
         public BaseLuisDialog() : base(CreateNewService()) { }
 
         [LuisIntent("")]
+        [LuisIntent("None")]
         public async Task NenhumaIntencao(IDialogContext context, LuisResult result)
         {
             await context.PostAsync("Eiiita... eu não sei responder isso **(╥_╥)**");
-            await context.PostAsync("Lembre-se que sou um bot e meu conhecimento é limitado. (͡๏̯ ͡๏)");
-
             FinalizeContextWithFail(context);
         }
 
-        [LuisIntent("None")]
-        public async Task SeiLa(IDialogContext context, LuisResult result)
+        protected void FinalizeContextWithFail(IDialogContext context, string mensagem = "")
         {
-            await context.PostAsync("Eiiita... eu não sei responder isso **(╥_╥)**");
-            await context.PostAsync("Lembre-se que sou um bot e meu conhecimento é limitado. (͡๏̯ ͡๏)");
-
-            FinalizeContextWithFail(context);
+            if(!string.IsNullOrWhiteSpace(mensagem))
+                context.Fail(new Exception(mensagem));
+            else
+                context.Fail(new NotImplementedException("Desculpe, não fui programado para esse responder tipo de coisa **(╥_╥)**"));
         }
 
-        protected void FinalizeContextWithFail(IDialogContext context)
-        {
-            var actionCompleted = new OperationCompletedHelper(false);
-            context.Done(actionCompleted);
-        }
-
-        protected void FinalizeContextWithSuccess(IDialogContext context)
-        {
-            var operationCompleted = new OperationCompletedHelper(true);
-            context.Done(operationCompleted);
-        }
+        protected void FinalizeContextWithDone(IDialogContext context) => context.Done(String.Empty);
 
         protected async Task SendIsTypingMessage(IDialogContext context)
         {
@@ -50,6 +38,15 @@ namespace TelesBot.Dialogs
             reply.Type = ActivityTypes.Typing;
 
             await context.PostAsync(reply);
+        }
+
+        protected async Task SendIsTyping<T>(IDialogContext context, Task<T> resultForWaitTo)
+        {
+            while (!resultForWaitTo.IsCompleted)
+            {
+                await SendIsTypingMessage(context);
+                await Task.Delay(3000);
+            }
         }
 
         private static ILuisService CreateNewService()
