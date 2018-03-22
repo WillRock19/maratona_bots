@@ -7,5 +7,6 @@ namespace JokeApi.Interfaces
     public interface IJokeRepository
     {
         Task<Joke> FindByCategoryAsync(JokeCategory jokeCategory);
+        Task<Joke> FindHeroJokeByHeroNameAsync(string heroName);
     }
 }

@@ -7,5 +7,6 @@ namespace JokeApi.Interfaces
     public interface IJokeAdministrator
     {
         Task<Joke> FindRandomJokeByCategory(JokeCategory jokeCategory);
+        Task<Joke> FindJokeByHeroName(string heroName);
     }
 }

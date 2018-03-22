@@ -26,12 +26,28 @@ namespace JokeApi.Controllers
                     return new JsonResult(joke);
                     //return JsonConvert.SerializeObject(joke, new JsonSerializerSettings { StringEscapeHandling = StringEscapeHandling.EscapeNonAscii }); Pode ser usado também
                 }
-                else
-                    throw new ArgumentNullException("Category", "Nenhuma categoria válida informada!");
+                else throw new ArgumentNullException("Category", "Nenhuma categoria válida informada!");
             }
             catch (Exception e) {
                 return new JsonResult("Uma exceção ocorreu..." + e.Message);
             }
+        }
+
+        [HttpGet("SuperHero")]
+        public async Task<JsonResult> SuperHeroJoke(string heroName)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(heroName))
+                    throw new ArgumentNullException("Category", "Nenhuma categoria válida informada!");
+
+                var joke = await _jokeRepository.FindHeroJokeByHeroNameAsync(heroName);
+                return new JsonResult(joke);
+            }
+            catch (Exception e) {
+                return new JsonResult("Um erro ocorreu: " + e.Message);
+            }
+
         }
     }
 }

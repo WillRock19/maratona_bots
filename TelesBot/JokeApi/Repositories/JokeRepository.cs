@@ -16,5 +16,8 @@ namespace JokeApi.Repositories
 
         public async Task<Joke> FindByCategoryAsync(JokeCategory jokeCategory) =>
             await _jokeAdministrator.FindRandomJokeByCategory(jokeCategory);
+
+        public async Task<Joke> FindHeroJokeByHeroNameAsync(string heroName) =>
+            await _jokeAdministrator.FindJokeByHeroName(heroName);
     }
 }

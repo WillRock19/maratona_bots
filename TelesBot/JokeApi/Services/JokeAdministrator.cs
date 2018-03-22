@@ -1,4 +1,5 @@
-﻿using JokeApi.Helpers;
+﻿using JokeApi.Extensions;
+using JokeApi.Helpers;
 using JokeApi.Interfaces;
 using JokeApi.Model;
 using System;
@@ -37,6 +38,14 @@ namespace JokeApi.Services
             return new Joke();
         }
 
+        public async Task<Joke> FindJokeByHeroName(string heroName)
+        {
+            var description = $"Heroi_{heroName}";
+            var category = description.ToEnumWWithThisDescription<JokeCategory>();
+
+            return await FindRandomJokeByCategory(category);
+        }
+
         private bool JokeListExists() => _jokes.Any();
 
         private async Task LoadJokeListAsync()
@@ -55,6 +64,12 @@ namespace JokeApi.Services
             var nerdGifs = _gifs.Where(x => x.jokeCategory == JokeCategory.Nerd);
             var dadGifs = _gifs.Where(x => x.jokeCategory == JokeCategory.DadJokes);
 
+            var BatmanGifs = _gifs.Where(x => x.jokeCategory == JokeCategory.Hero_Batman);
+            var DaredevilGifs = _gifs.Where(x => x.jokeCategory == JokeCategory.Hero_Daredevil);
+            var HulkGifs = _gifs.Where(x => x.jokeCategory == JokeCategory.Hero_Hulk);
+            var XmenGifs = _gifs.Where(x => x.jokeCategory == JokeCategory.Hero_Xmen);
+            var SupermanGifs = _gifs.Where(x => x.jokeCategory == JokeCategory.Hero_Superman);
+
             foreach (var joke in _jokes)
             {
                 switch (joke.Category)
@@ -69,6 +84,26 @@ namespace JokeApi.Services
 
                     case JokeCategory.Nerd:
                         joke.GifUrl = nerdGifs.ElementAt(RandomElementPosition(nerdGifs.Count())).linkUrl;
+                        break;
+
+                    case JokeCategory.Hero_Batman:
+                        joke.GifUrl = BatmanGifs.ElementAt(RandomElementPosition(BatmanGifs.Count())).linkUrl;
+                        break;
+
+                    case JokeCategory.Hero_Daredevil:
+                        joke.GifUrl = DaredevilGifs.ElementAt(RandomElementPosition(DaredevilGifs.Count())).linkUrl;
+                        break;
+
+                    case JokeCategory.Hero_Hulk:
+                        joke.GifUrl = HulkGifs.ElementAt(RandomElementPosition(HulkGifs.Count())).linkUrl;
+                        break;
+
+                    case JokeCategory.Hero_Xmen:
+                        joke.GifUrl = XmenGifs.ElementAt(RandomElementPosition(XmenGifs.Count())).linkUrl;
+                        break;
+
+                    case JokeCategory.Hero_Superman:
+                        joke.GifUrl = SupermanGifs.ElementAt(RandomElementPosition(SupermanGifs.Count())).linkUrl;
                         break;
                 }
             }

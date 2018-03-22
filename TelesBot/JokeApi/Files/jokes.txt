@@ -110,3 +110,15 @@ Qual é a especialidade de um técnico em informática evangélico?		|| Converte
 Por que a princesa Isabel não fazia limpeza de pele?	||	Pra não ter ex-cravos.	||	Nerd
 O que Harry Potter lê quando está doente?	||	Saramago!	||	Nerd
 Quanto é 8 dividido em duas partes?		||  Na vertical é 3, na horizontal é 0.	||	Nerd
+Por que o Batman colocou o batmóvel no seguro? ||  Porque ele tem medo que robin. 	|| Heroi_Batman
+Como o Batman faz para abrir a bat-caverna ? 	||	Ele bat-palma.	|| Heroi_Batman
+Como o Batman conheceu o Robin?	||	Pelo bat-papo.	|| Heroi_Batman
+O Batman veste o seu Bat-fato, calça os seus Bat-sapatos e coloca a sua Bat-gravata. Onde é que ele foi? ||	Ao Bat-zado. ||	Heroi_Batman
+O que aconteceu quando o Super-Homem morreu?	||	O Lex ficou de Luthor	||	Heroi_Superman
+Qual é o lanche preferido do Professor Xavier?	||	X-Burguer	||	Heroi_Xmen
+Qual o herói que já está ficando velhinho?		||		O Vôverine		||	Heroi_Xmen
+Porque o Demolidor só passa na Netflix?		||		Porque ele não TV		||		Heroi_Daredevil
+O que o Magneto pediu aos pais quando era criança?		||		Uma imãzinha		||	Heroi_Xmen
+Como o Batman dorme? 	||	De Bruce	|| Heroi_Batman
+Onde passa reprise dos filmes do Hulk? 	||	    No Vale a Pena Verde Novo	||	Heroi_Hulk
+Qual o programa preferido do Bruce Banner?	||	Caldeirão do Hulk	||	Heroi_Hulk
