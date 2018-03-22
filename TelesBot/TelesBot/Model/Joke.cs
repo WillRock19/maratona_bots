@@ -1,5 +1,4 @@
 ﻿using System;
-using TelesBot.Enums;
 
 namespace TelesBot.Model
 {
@@ -8,7 +7,6 @@ namespace TelesBot.Model
     {
         public string Introduction { get; set; }
         public string Conclusion { get; set; }
-        public JokeCategory Category { get; set; }
         public string CategoryDescription { get; set; }
         public string GifUrl { get; set; }
 

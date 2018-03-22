@@ -35,8 +35,6 @@ namespace TelesBot.Services
             {
                 var analysis = await getImageAnalysis(client, image.Content);
 
-                client.Dispose();
-
                 if (!analysis.IsSuccessStatusCode)
                     return string.Empty;
 

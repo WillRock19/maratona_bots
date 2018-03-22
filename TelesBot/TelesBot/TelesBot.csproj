@@ -150,8 +150,6 @@
     <Compile Include="CustomResponses\CustomIntentionsResponses.cs" />
     <Compile Include="Services\ImageRecognitionHandler.cs" />
     <Compile Include="Services\JokeSearcher.cs" />
-    <Compile Include="Services\UserInputTranslator.cs" />
-    <Compile Include="Services\UserMoodInterpretator.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config">

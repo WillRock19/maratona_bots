@@ -20,14 +20,19 @@ namespace TelesBot.Services
         public JokeSearcher()
         {
             ApiUrl = ConfigurationManager.AppSettings["ApiUrl"];
-
-            client = new HttpClient();
-            client.BaseAddress = new Uri(ApiUrl);
         }
 
-        public async Task<Joke> GetJokeByCategory(JokeCategory category)
+        public async Task<Joke> GetJokeByCategory(JokeCategory category) => 
+            await GetJoke($"{ApiUrl}?category={category.ToString()}");
+
+        public async Task<Joke> GetJokeBySuperHero(string heroName) => 
+            await GetJoke($"{ApiUrl}/SuperHero?heroName={heroName}");
+
+        private async Task<Joke> GetJoke(string urlWithParameters)
         {
-            var urlWithParameters = $"{ApiUrl}?category={category.ToString()}";
+            client = new HttpClient();
+            client.BaseAddress = new Uri(ApiUrl);
+
             var response = await client.GetAsync(urlWithParameters);
 
             if (!response.IsSuccessStatusCode)

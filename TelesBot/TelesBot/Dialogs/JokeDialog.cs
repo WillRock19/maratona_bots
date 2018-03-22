@@ -10,6 +10,7 @@ using Microsoft.Bot.Connector;
 using TelesBot.Enums;
 using TelesBot.Extensions;
 using TelesBot.Helpers;
+using TelesBot.Model;
 using TelesBot.Services;
 
 namespace TelesBot.Dialogs
@@ -54,16 +55,30 @@ namespace TelesBot.Dialogs
         private async Task ResumeWithUserAttachment(IDialogContext context, IAwaitable<IEnumerable<Attachment>> result)
         {
             var attachment = await result;
-            var tag = await imageRecognition.getImageTags(attachment.FirstOrDefault());
+            var tag = imageRecognition.getImageTags(attachment.FirstOrDefault());
 
-            if (!string.IsNullOrEmpty(tag))
-            {
-                await context.PostAsync("Poxa... esse eu não conheço ಥ﹏ಥ");
-            }
+            var istyping = SendIsTyping(context, tag);
+            await Task.WhenAll(new[] { tag, istyping });
+
+            var superHeroName = tag.Result;
+
+            if (string.IsNullOrEmpty(tag.Result)) FinalizeContextWithFail(context, "Poxa... esse eu não conheço ಥ﹏ಥ");
             else
             {
-
+                await context.PostAsync($"Beleza... então você quer uma piada sobre o **'{tag.Result}'**, né? Peraí...");
+                await GetHeroJokeAndMakePun(context, tag.Result);
             }
+        }
+        
+        private async Task GetHeroJokeAndMakePun(IDialogContext context, string HeroName)
+        {
+            var result = jokeSearcher.GetJokeBySuperHero(HeroName);
+            var istyping = SendIsTyping(context, result);
+
+            await Task.WhenAll(new[] { result, istyping });
+            jokeFinded = result.Result;
+
+            await MakeJoke(context);
         }
 
         private async Task GetSimpleJokeAndMakePun(IDialogContext context, JokeCategory category)
@@ -74,6 +89,11 @@ namespace TelesBot.Dialogs
             await Task.WhenAll(new[] { result, istyping });
             jokeFinded = result.Result;
 
+            await MakeJoke(context);
+        }
+
+        private async Task MakeJoke(IDialogContext context)
+        {
             if (jokeFinded.Exists())
             {
                 await context.PostAsync(jokeFinded.Introduction);
@@ -114,7 +134,7 @@ namespace TelesBot.Dialogs
                 var userLikedJoke = await result;
 
                 if (userLikedJoke) await context.PostAsync("Fico feliz em saber ლ(́◉◞౪◟◉‵ლ)");
-                else await context.PostAsync("Ah... você que se foda então (｡͡•‿•｡)");
+                else await context.PostAsync("Ah... você que se foda então (｡•‿•｡)凸");
             }
             catch (TooManyAttemptsException ex)
             {

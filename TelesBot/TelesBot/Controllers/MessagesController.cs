@@ -16,6 +16,8 @@ namespace TelesBot
     [BotAuthentication]
     public class MessagesController : ApiController
     {
+        private int contador = 0;
+
         /// <summary>
         /// POST: api/Messages
         /// Receive a message from a user and reply to it
