@@ -16,7 +16,7 @@ namespace TelesBot
     [BotAuthentication]
     public class MessagesController : ApiController
     {
-        private int contador = 0;
+        private ConnectorClient connector;
 
         /// <summary>
         /// POST: api/Messages
@@ -24,10 +24,10 @@ namespace TelesBot
         /// </summary>
         public async Task<HttpResponseMessage> Post([FromBody]Activity activity)
         {
-            await HandleSystemActivity(activity);
-            var response = Request.CreateResponse(HttpStatusCode.OK);
+            connector = new ConnectorClient(new Uri(activity.ServiceUrl));
 
-            return response;
+            await HandleSystemActivity(activity);
+            return Request.CreateResponse(HttpStatusCode.OK);
         }
 
         private async Task HandleSystemActivity(Activity activity)
@@ -46,8 +46,9 @@ namespace TelesBot
                     }
                     catch (Exception e)
                     {
-                        var text = e.Message;
+                        var a =  e.Message;
                     }
+
 
                     break;
 
@@ -75,7 +76,6 @@ namespace TelesBot
 
                 if (activity.MembersAdded.Any(m => m.Id != botId))
                 {
-                    var connector = new ConnectorClient(new Uri(activity.ServiceUrl));
                     var announcer = new Announcer();
                     var reply = activity.CreateReply();
 

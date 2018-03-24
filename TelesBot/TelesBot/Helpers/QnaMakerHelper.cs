@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace TelesBot.Helpers
@@ -28,7 +29,8 @@ namespace TelesBot.Helpers
 
         public async Task<string> SearchForHighScoreAnswer(string query)
         {
-            var qnaResult = await service.QueryServiceAsync(query);
+            var text = WorkBrazilianHelloVariations(query);
+            var qnaResult = await service.QueryServiceAsync(text);
 
             if (!qnaResult.Answers.Any())
                 return defaultNotFindMessage;
@@ -46,5 +48,8 @@ namespace TelesBot.Helpers
         private QnAMakerResult FindAnswerWithHigherScore(IEnumerable<QnAMakerResult> answers) =>
             answers.Aggregate((previousAnswer, currentAnswer) => 
                 previousAnswer.Score > currentAnswer.Score ? previousAnswer : currentAnswer);
+
+        private string WorkBrazilianHelloVariations(string hello) =>
+            Regex.Replace(Regex.Replace(Regex.Replace(hello, "o+", "o"), "i+", "i"), "e+", "e");
     }
 }

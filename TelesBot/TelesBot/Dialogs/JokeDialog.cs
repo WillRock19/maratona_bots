@@ -44,10 +44,15 @@ namespace TelesBot.Dialogs
         [LuisIntent("ContarPiada.Herois")]
         public async Task ContarUmaPiadaDeSuperHeroi(IDialogContext context, LuisResult result)
         {
+            await AskForSuperheroSimbol(context, "Me manda o simbolo de algum herói e vou ver se sei alguma piada sobre ele ^^");
+        }
+
+        private async Task AskForSuperheroSimbol(IDialogContext context, string message)
+        {
             PromptDialog.Attachment(
                 context: context,
                 resume: ResumeWithUserAttachment,
-                prompt: "Me manda o simbolo de algum herói e vou ver se sei alguma piada sobre ele ^^",
+                prompt: message,
                 retry: "Não consegui entender... tenta manda uma imagem direto (não o link, a imagem mesmo) =D"
             );
         }
@@ -62,14 +67,44 @@ namespace TelesBot.Dialogs
 
             var superHeroName = tag.Result;
 
-            if (string.IsNullOrEmpty(tag.Result)) FinalizeContextWithFail(context, "Poxa... esse eu não conheço ಥ﹏ಥ");
+            if (string.IsNullOrEmpty(tag.Result))
+            {
+                await context.PostAsync("Poxa... esse eu não conheço ಥ﹏ಥ");
+                PromptDialog.Confirm
+                (
+                    context: context,
+                    resume: TryAnotherSimbol,
+                    prompt: "Quer tentar com outro simbolo?",
+                    retry: "Opção escolhida inválida. Favor, escolher uma das disponíveis.",
+                    promptStyle: PromptStyle.Auto,
+                    attempts: 2
+                );
+            }
             else
             {
                 await context.PostAsync($"Beleza... então você quer uma piada sobre o **'{tag.Result}'**, né? Peraí...");
                 await GetHeroJokeAndMakePun(context, tag.Result);
             }
         }
-        
+
+        private async Task TryAnotherSimbol(IDialogContext context, IAwaitable<bool> result)
+        {
+            try
+            {
+                var tryAnother = await result;
+
+                if (tryAnother)
+                    await AskForSuperheroSimbol(context, "Ok, manda outro e vou tentar de novo ^^");
+                else
+                    FinalizeContextWithFail(context, "Ok... me desculpa ಥ﹏ಥ");
+            }
+            catch(TooManyAttemptsException e)
+            {
+                FinalizeContextWithFail(context, "Ah, já que é assim, me chama quando quiser alguma coisa (︶︹︺)");
+            }
+        }
+
+
         private async Task GetHeroJokeAndMakePun(IDialogContext context, string HeroName)
         {
             var result = jokeSearcher.GetJokeBySuperHero(HeroName);
@@ -133,15 +168,21 @@ namespace TelesBot.Dialogs
             try{
                 var userLikedJoke = await result;
 
-                if (userLikedJoke) await context.PostAsync("Fico feliz em saber ლ(́◉◞౪◟◉‵ლ)");
-                else await context.PostAsync("Ah... você que se foda então (｡•‿•｡)凸");
+                if (userLikedJoke)
+                {
+                    await context.PostAsync("Fico feliz em saber ლ(́◉◞౪◟◉‵ლ)");
+                    context.Done("E ai... quer ouvir outra...? (♥‿♥)");
+                } 
+                else
+                {
+                    await context.PostAsync("Ah... você que se foda então (｡•‿•｡)凸");
+                    context.Done("Zoeeeeira... ^̮^ rs. Deixa eu tentar contar outra? (◔ ◡ ◔)");
+                }
             }
             catch (TooManyAttemptsException ex)
             {
                 await context.PostAsync("Já que você não quer responder direito... se fode aí (╹◡╹)凸");
-            }
-            finally {
-                FinalizeContextWithDone(context);
+                FinalizeContextWithFail(context, "Quando quiser seriamente uma zoeira, me dá um toque. (︶︹︺)");
             }
         }
     }

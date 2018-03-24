@@ -104,24 +104,23 @@ namespace TelesBot.Dialogs
             try
             {
                 var operationResult = await result;
-                await AsksUserForAJoke(context);
+                await Task.Delay(2000).ContinueWith(t =>
+                {
+                    PromptDialog.Confirm(
+                       context: context,
+                       resume: CheckUserWantsAJoke,
+                       prompt: operationResult.ToString(),
+                       retry: "Opção escolhida inválida. Favor, escolher uma das disponíveis.",
+                       promptStyle: PromptStyle.Auto,
+                       attempts: 2
+                   );
+                });
             }
             catch(Exception e)
             {
                 await context.PostAsync(e.Message);
                 context.Wait(MessageReceived);
             }
-        }
-
-        private async Task AsksUserForAJoke(IDialogContext context)
-        {
-            PromptDialog.Confirm(
-                    context: context,
-                    resume: CheckUserWantsAJoke,
-                    prompt: "Quer ouvir outra...?      ° ͜ʖ﻿ ͡°",
-                    retry: "Opção escolhida inválida. Favor, escolher uma das disponíveis.",
-                    promptStyle: PromptStyle.Auto
-                );
         }
 
         private async Task CheckUserWantsAJoke(IDialogContext context, IAwaitable<bool> result)
