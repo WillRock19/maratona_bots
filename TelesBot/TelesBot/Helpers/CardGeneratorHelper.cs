@@ -21,7 +21,7 @@ namespace TelesBot.Helpers
                     {
                         Url = imageUrl
                     }
-                }
+                },
             };
 
             return heroCard.ToAttachment();
