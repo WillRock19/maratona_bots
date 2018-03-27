@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using System.Configuration;
 using TelesBot.Extensions;
 using TelesBot.Enums;
+using TelesBot.Interfaces;
 
 namespace TelesBot.CustomResponses
 {
-    [Serializable]
-    public class Announcer
+    public class Announcer  : IAnnouncer
     {
         private string botImageUrl;
         private string botPorposeUrl;

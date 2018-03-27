@@ -9,19 +9,23 @@ using System.Threading.Tasks;
 using TelesBot.CustomResponses;
 using TelesBot.Extensions;
 using TelesBot.Forms;
+using TelesBot.Interfaces;
 
 namespace TelesBot.Dialogs
 {
     [Serializable]
     public class BotDialog : BaseLuisDialog
     {
-        private CustomIntentionsResponses customResponses;
-        private Announcer botAnnounces;
+        private SimpleResponsesGenerator customResponses;
+        private IAnnouncer announcer;
+        private IDialogFactory dialogFactory;
 
-        public BotDialog()
+        public BotDialog(IAnnouncer announcer, IDialogFactory dialogFactory)
         {
-            customResponses = new CustomIntentionsResponses();
-            botAnnounces = new Announcer();
+            customResponses = new SimpleResponsesGenerator();
+
+            this.announcer = announcer;
+            this.dialogFactory = dialogFactory;
         }
 
         [LuisIntent("Ajuda")]
@@ -30,7 +34,7 @@ namespace TelesBot.Dialogs
             var message = context.MakeMessage();
             message.Attachments = new List<Attachment>();
 
-            message.Attachments.Add(botAnnounces.Help().ToAttachment());
+            message.Attachments.Add(announcer.Help().ToAttachment());
             await context.PostAsync(message);
         }
 
@@ -96,7 +100,7 @@ namespace TelesBot.Dialogs
             var message = context.MakeMessage();
 
             message.Text = data.JokeType.GetDescribe();           
-            await context.Forward(new JokeDialog(), ExecuteAfterJokeDialog, message, CancellationToken.None);
+            await context.Forward(dialogFactory.Create<JokeDialog>(), ExecuteAfterJokeDialog, message, CancellationToken.None);
         }
 
         private async Task ExecuteAfterJokeDialog(IDialogContext context, IAwaitable<object> result)

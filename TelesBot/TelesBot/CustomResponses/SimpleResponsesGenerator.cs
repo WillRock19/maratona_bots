@@ -1,34 +1,31 @@
-﻿using Microsoft.Bot.Builder.Dialogs;
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
 using TelesBot.Helpers;
+using TelesBot.Interfaces;
 
 namespace TelesBot.CustomResponses
 {
     [Serializable]
-    public class CustomIntentionsResponses
+    public class SimpleResponsesGenerator : ISimpleResponsesGenerator
     {
         private int greetingsAnswered;
         private int smallTalkAnswered;
         private bool userTriedToBeTroll;
 
-        private BotCustomResponses customResponses;
+        private SimpleIntentionsResponses customResponses;
 
         private QnaMakerHelper qnaMaker;
 
-        public CustomIntentionsResponses()
+        public SimpleResponsesGenerator()
         {
             qnaMaker = new QnaMakerHelper();
-            customResponses = new BotCustomResponses();
+            customResponses = new SimpleIntentionsResponses();
 
             userTriedToBeTroll = false;
             greetingsAnswered = 0;
             smallTalkAnswered = 0;
         }
-
-        public async Task RespondWithQnaMaker(IDialogContext context, string query) => 
-            await SearchAnswerInQnaMaker(query);
 
         public async Task<string> RespondGreeting(string greeting)
         {

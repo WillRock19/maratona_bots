@@ -1,11 +1,10 @@
 ﻿using Microsoft.Bot.Connector;
-using System;
 using System.Collections.Generic;
+using TelesBot.Interfaces;
 
 namespace TelesBot.Helpers
 {
-    [Serializable]
-    public class CardGeneratorHelper
+    public class CardGeneratorHelper : ICardGeneratorHelper
     {
         public CardGeneratorHelper() { }
 

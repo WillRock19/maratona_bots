@@ -1,15 +1,14 @@
 ﻿using Microsoft.Bot.Builder.CognitiveServices.QnAMaker;
-using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using TelesBot.Interfaces;
 
 namespace TelesBot.Helpers
 {
-    [Serializable]
-    public class QnaMakerHelper
+    public class QnaMakerHelper : IQnaMakerHelper
     {
         private string qnaKnowledgeBaseId { get; set; }
         private string qnaSubscriptionKey { get; set; }

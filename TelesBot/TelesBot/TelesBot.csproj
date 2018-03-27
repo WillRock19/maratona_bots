@@ -129,7 +129,8 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\MessagesController.cs" />
     <Compile Include="CustomResponses\Announcer.cs" />
-    <Compile Include="CustomResponses\BotCustomResponses.cs" />
+    <Compile Include="CustomResponses\SimpleIntentionsResponses.cs" />
+    <Compile Include="Dependency\BotModules.cs" />
     <Compile Include="Dialogs\BaseLuisDialog.cs" />
     <Compile Include="Dialogs\BotDialog.cs" />
     <Compile Include="Dialogs\JokeDialog.cs" />
@@ -144,10 +145,19 @@
     <Compile Include="Enums\JokeCategory.cs" />
     <Compile Include="Helpers\CardGeneratorHelper.cs" />
     <Compile Include="Helpers\QnaMakerHelper.cs" />
+    <Compile Include="Interfaces\IAnnouncer.cs" />
+    <Compile Include="Interfaces\ICardGeneratorHelper.cs" />
+    <Compile Include="Interfaces\IDialogFactory.cs" />
+    <Compile Include="Interfaces\IImageRecognitionHandler.cs" />
+    <Compile Include="Interfaces\IJokeSearcher.cs" />
+    <Compile Include="Interfaces\IQnaMakerHelper.cs" />
+    <Compile Include="Interfaces\ISimpleIntentionsResponses.cs" />
+    <Compile Include="Interfaces\ISimpleResponsesGenerator.cs" />
     <Compile Include="Model\ImageAnalysisResult.cs" />
     <Compile Include="Model\Joke.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="CustomResponses\CustomIntentionsResponses.cs" />
+    <Compile Include="CustomResponses\SimpleResponsesGenerator.cs" />
+    <Compile Include="Services\DialogFactory.cs" />
     <Compile Include="Services\ImageRecognitionHandler.cs" />
     <Compile Include="Services\JokeSearcher.cs" />
   </ItemGroup>

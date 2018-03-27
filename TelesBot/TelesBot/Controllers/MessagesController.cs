@@ -1,4 +1,6 @@
-﻿using Microsoft.Bot.Builder.Dialogs;
+﻿using Autofac;
+using Microsoft.Bot.Builder.Dialogs;
+using Microsoft.Bot.Builder.Dialogs.Internals;
 using Microsoft.Bot.Builder.Luis;
 using Microsoft.Bot.Connector;
 using System;
@@ -42,7 +44,13 @@ namespace TelesBot
 
                     try
                     {
-                        await Conversation.SendAsync(activity, () => new Dialogs.BotDialog());
+                        using (var scope = DialogModule.BeginLifetimeScope(Conversation.Container, activity))
+                        {
+                            var dialog = scope.Resolve<IDialog<object>>();
+                            await Conversation.SendAsync(activity, () => dialog);
+                        }
+
+                        //await Conversation.SendAsync(activity, () => new Dialogs.BotDialog());
                     }
                     catch (Exception e)
                     {

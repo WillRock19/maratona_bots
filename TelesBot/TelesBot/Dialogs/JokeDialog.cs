@@ -2,16 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Autofac;
 using Microsoft.Bot.Builder.Dialogs;
-using Microsoft.Bot.Builder.Dialogs.Internals;
 using Microsoft.Bot.Builder.Luis.Models;
 using Microsoft.Bot.Connector;
 using TelesBot.Enums;
 using TelesBot.Extensions;
-using TelesBot.Helpers;
+using TelesBot.Interfaces;
 using TelesBot.Model;
-using TelesBot.Services;
 
 namespace TelesBot.Dialogs
 {
@@ -19,17 +16,17 @@ namespace TelesBot.Dialogs
         
     public class JokeDialog : BaseLuisDialog
     {
-        private JokeSearcher jokeSearcher;
-        private ImageRecognitionHandler imageRecognition;
+        private IJokeSearcher jokeSearcher;
+        private IImageRecognitionHandler imageRecognition;
 
-        private CardGeneratorHelper cardGenerator;
-        private Model.Joke jokeFinded;
+        private ICardGeneratorHelper cardGenerator;
+        private Joke jokeFinded;
 
-        public JokeDialog()
+        public JokeDialog(IJokeSearcher jokeSearcher, IImageRecognitionHandler imageRecognition, ICardGeneratorHelper cardGenerator)
         {
-            jokeSearcher = new JokeSearcher();
-            cardGenerator = new CardGeneratorHelper();
-            imageRecognition = new ImageRecognitionHandler();
+            this.cardGenerator = cardGenerator;
+            this.imageRecognition = imageRecognition;
+            this.jokeSearcher = jokeSearcher;
         }
 
         [LuisIntent("ContarPiada.Simples")]
@@ -60,14 +57,12 @@ namespace TelesBot.Dialogs
         private async Task ResumeWithUserAttachment(IDialogContext context, IAwaitable<IEnumerable<Attachment>> result)
         {
             var attachment = await result;
-            var tag = imageRecognition.getImageTags(attachment.FirstOrDefault());
+            var tagSearch = imageRecognition.getImageTags(attachment.FirstOrDefault());
+            await SendTypingMessageAndWaitOperation(context, tagSearch);
 
-            var istyping = SendIsTyping(context, tag);
-            await Task.WhenAll(new[] { tag, istyping });
+            var superHeroName = tagSearch.Result;
 
-            var superHeroName = tag.Result;
-
-            if (string.IsNullOrEmpty(tag.Result))
+            if (string.IsNullOrEmpty(superHeroName))
             {
                 await context.PostAsync("Poxa... esse eu não conheço ಥ﹏ಥ");
                 PromptDialog.Confirm
@@ -82,8 +77,8 @@ namespace TelesBot.Dialogs
             }
             else
             {
-                await context.PostAsync($"Beleza... então você quer uma piada sobre o **'{tag.Result}'**, né? Peraí...");
-                await GetHeroJokeAndMakePun(context, tag.Result);
+                await context.PostAsync($"Beleza... então você quer uma piada sobre o **'{tagSearch.Result}'**, né? Peraí...");
+                await GetHeroJokeAndMakePun(context, tagSearch.Result);
             }
         }
 
@@ -107,22 +102,20 @@ namespace TelesBot.Dialogs
 
         private async Task GetHeroJokeAndMakePun(IDialogContext context, string HeroName)
         {
-            var result = jokeSearcher.GetJokeBySuperHero(HeroName);
-            var istyping = SendIsTyping(context, result);
+            var jokeSearch = jokeSearcher.GetJokeBySuperHero(HeroName);
+            await SendTypingMessageAndWaitOperation(context, jokeSearch);
 
-            await Task.WhenAll(new[] { result, istyping });
-            jokeFinded = result.Result;
+            jokeFinded = jokeSearch.Result;
 
             await MakeJoke(context);
         }
 
         private async Task GetSimpleJokeAndMakePun(IDialogContext context, JokeCategory category)
         {
-            var result = jokeSearcher.GetJokeByCategory(category);
-            var istyping = SendIsTyping(context, result);
+            var jokeSearch = jokeSearcher.GetJokeByCategory(category);
+            await SendTypingMessageAndWaitOperation(context, jokeSearch);
 
-            await Task.WhenAll(new[] { result, istyping });
-            jokeFinded = result.Result;
+            jokeFinded = jokeSearch.Result;
 
             await MakeJoke(context);
         }

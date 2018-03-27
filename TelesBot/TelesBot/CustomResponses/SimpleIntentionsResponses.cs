@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using TelesBot.Interfaces;
 
 namespace TelesBot.CustomResponses
 {
-    [Serializable]
-    public class BotCustomResponses
+    public class SimpleIntentionsResponses : ISimpleIntentionsResponses
     {
-        public BotCustomResponses() { }
+        public SimpleIntentionsResponses() { }
 
         public IReadOnlyCollection<string> Greetings() => new List<string>
         {

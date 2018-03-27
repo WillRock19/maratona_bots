@@ -4,22 +4,20 @@ using System.Configuration;
 using System.Net.Http;
 using System.Threading.Tasks;
 using TelesBot.Enums;
-using TelesBot.Extensions;
+using TelesBot.Interfaces;
 using TelesBot.Model;
 
 namespace TelesBot.Services
 {
-    [Serializable]
-    public class JokeSearcher
+    public class JokeSearcher : IJokeSearcher
     {
         private string ApiUrl;
-
-        [NonSerialized]
         private HttpClient client;
 
-        public JokeSearcher()
+        public JokeSearcher(HttpClient httpClient)
         {
             ApiUrl = ConfigurationManager.AppSettings["ApiUrl"];
+            client = httpClient;
         }
 
         public async Task<Joke> GetJokeByCategory(JokeCategory category) => 
@@ -30,7 +28,6 @@ namespace TelesBot.Services
 
         private async Task<Joke> GetJoke(string urlWithParameters)
         {
-            client = new HttpClient();
             client.BaseAddress = new Uri(ApiUrl);
 
             var response = await client.GetAsync(urlWithParameters);

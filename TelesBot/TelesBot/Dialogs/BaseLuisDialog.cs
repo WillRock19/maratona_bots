@@ -5,7 +5,6 @@ using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Luis;
 using Microsoft.Bot.Builder.Luis.Models;
 using Microsoft.Bot.Connector;
-using TelesBot.Helpers;
 
 namespace TelesBot.Dialogs
 {
@@ -27,32 +26,39 @@ namespace TelesBot.Dialogs
             if(!string.IsNullOrWhiteSpace(mensagem))
                 context.Fail(new Exception(mensagem));
             else
-                context.Fail(new NotImplementedException("Desculpe, não fui programado para esse responder tipo de coisa **(╥_╥)**"));
+                context.Fail(new NotImplementedException("Não fui programado para esse responder tipo de coisa **(╥_╥)**"));
         }
 
         protected void FinalizeContextWithDone(IDialogContext context) => context.Done(String.Empty);
 
-        protected async Task SendIsTypingMessage(IDialogContext context)
-        {
-            var reply = context.MakeMessage();
-            reply.Type = ActivityTypes.Typing;
 
-            await context.PostAsync(reply);
-        }
-
-        protected async Task SendIsTyping<T>(IDialogContext context, Task<T> resultForWaitTo)
+        protected async Task SendTypingMessageAndWaitOperation<T>(IDialogContext context, Task<T> operation)
         {
-            while (!resultForWaitTo.IsCompleted)
-            {
-                await SendIsTypingMessage(context);
-                await Task.Delay(3000);
-            }
+            var typingTask = sendIsTypingWhileOperationRunning(context, operation);
+            await Task.WhenAll(new[] { operation, typingTask });
         }
 
         private static ILuisService CreateNewService()
         {
             var luisModel = new LuisModelAttribute(ConfigurationManager.AppSettings["LuisModelId"], ConfigurationManager.AppSettings["LuisSubscriptionKey"]);
             return new LuisService(luisModel);
+        }
+
+        private async Task sendIsTypingWhileOperationRunning<T>(IDialogContext context, Task<T> operation)
+        {
+            while (!operation.IsCompleted)
+            {
+                await SendIsTypingMessage(context);
+                await Task.Delay(3000);
+            }
+        }
+
+        private async Task SendIsTypingMessage(IDialogContext context)
+        {
+            var reply = context.MakeMessage();
+            reply.Type = ActivityTypes.Typing;
+
+            await context.PostAsync(reply);
         }
     }
 }

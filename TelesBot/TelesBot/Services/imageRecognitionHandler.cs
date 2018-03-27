@@ -1,39 +1,35 @@
 ﻿using Microsoft.Bot.Connector;
 using Newtonsoft.Json;
-using System;
 using System.Configuration;
 using System.Linq;
 using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
 using System.Threading.Tasks;
+using TelesBot.Interfaces;
 using TelesBot.Model;
 
 namespace TelesBot.Services
 {
-    [Serializable]
-    public class ImageRecognitionHandler
+    public class ImageRecognitionHandler : IImageRecognitionHandler
     {
         private string predictionUrl;
         private string predictionKey;
-
-        [NonSerialized]
         private HttpClient client;
 
-        public ImageRecognitionHandler()
+        public ImageRecognitionHandler(HttpClient httpClient)
         {
             predictionUrl = ConfigurationManager.AppSettings["ImagePredictionUrl"];
             predictionKey = ConfigurationManager.AppSettings["ImagePredictionKey"];
+
+            client = httpClient;
         }
 
         public async Task<string> getImageTags(Attachment attachment)
         {
-            client = new HttpClient();
             var image = await getImage(attachment.ContentUrl);
 
             if (image.IsSuccessStatusCode)
             {
-                var analysis = await getImageAnalysis(client, image.Content);
+                var analysis = await getImageAnalysis(image.Content);
 
                 if (!analysis.IsSuccessStatusCode)
                     return string.Empty;
@@ -41,14 +37,13 @@ namespace TelesBot.Services
                 return await findMostLikelyImageTag(analysis);
             }
 
-            client.Dispose();
             return string.Empty;
         }
 
         private async Task<HttpResponseMessage> getImage(string url) =>
             await client.GetAsync(url);
 
-        private async Task<HttpResponseMessage> getImageAnalysis(HttpClient client, HttpContent image)
+        private async Task<HttpResponseMessage> getImageAnalysis(HttpContent image)
         {
             client.DefaultRequestHeaders.Add("Prediction-Key", predictionKey);
             return await client.PostAsync(predictionUrl, image);
