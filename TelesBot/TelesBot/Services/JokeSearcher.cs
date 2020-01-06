@@ -18,6 +18,7 @@ namespace TelesBot.Services
         {
             ApiUrl = ConfigurationManager.AppSettings["ApiUrl"];
             client = httpClient;
+            client.BaseAddress = new Uri(ApiUrl);
         }
 
         public async Task<Joke> GetJokeByCategory(JokeCategory category) => 
@@ -28,8 +29,6 @@ namespace TelesBot.Services
 
         private async Task<Joke> GetJoke(string urlWithParameters)
         {
-            client.BaseAddress = new Uri(ApiUrl);
-
             var response = await client.GetAsync(urlWithParameters);
 
             if (!response.IsSuccessStatusCode)

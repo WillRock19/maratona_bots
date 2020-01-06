@@ -67,6 +67,11 @@ namespace TelesBot.Dependency
               .AsImplementedInterfaces()
               .InstancePerDependency();
 
+            builder.RegisterType<PromptDialogGenerator>()
+              .Keyed<IPromptDialogGenerator>(FiberModule.Key_DoNotSerialize)
+              .AsImplementedInterfaces()
+              .InstancePerDependency();
+
             //Register 
             builder.RegisterType<HttpClient>()
               .Keyed<HttpClient>(FiberModule.Key_DoNotSerialize)

@@ -34,7 +34,7 @@ namespace TelesBot.Dialogs
 
         protected async Task SendTypingMessageAndWaitOperation<T>(IDialogContext context, Task<T> operation)
         {
-            var typingTask = sendIsTypingWhileOperationRunning(context, operation);
+            var typingTask = sendIsTypingWhileOperationIsRunning(context, operation);
             await Task.WhenAll(new[] { operation, typingTask });
         }
 
@@ -44,7 +44,7 @@ namespace TelesBot.Dialogs
             return new LuisService(luisModel);
         }
 
-        private async Task sendIsTypingWhileOperationRunning<T>(IDialogContext context, Task<T> operation)
+        private async Task sendIsTypingWhileOperationIsRunning<T>(IDialogContext context, Task<T> operation)
         {
             while (!operation.IsCompleted)
             {

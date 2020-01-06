@@ -18,15 +18,16 @@ namespace TelesBot.Dialogs
     {
         private IJokeSearcher jokeSearcher;
         private IImageRecognitionHandler imageRecognition;
-
         private ICardGeneratorHelper cardGenerator;
+        private IPromptDialogGenerator promptGenerator;
         private Joke jokeFinded;
 
-        public JokeDialog(IJokeSearcher jokeSearcher, IImageRecognitionHandler imageRecognition, ICardGeneratorHelper cardGenerator)
+        public JokeDialog(IJokeSearcher jokeSearcher, IImageRecognitionHandler imageRecognition, ICardGeneratorHelper cardGenerator, IPromptDialogGenerator promptGenerator)
         {
             this.cardGenerator = cardGenerator;
             this.imageRecognition = imageRecognition;
             this.jokeSearcher = jokeSearcher;
+            this.promptGenerator = promptGenerator;
         }
 
         [LuisIntent("ContarPiada.Simples")]
@@ -65,15 +66,7 @@ namespace TelesBot.Dialogs
             if (string.IsNullOrEmpty(superHeroName))
             {
                 await context.PostAsync("Poxa... esse eu não conheço ಥ﹏ಥ");
-                PromptDialog.Confirm
-                (
-                    context: context,
-                    resume: TryAnotherSimbol,
-                    prompt: "Quer tentar com outro simbolo?",
-                    retry: "Opção escolhida inválida. Favor, escolher uma das disponíveis.",
-                    promptStyle: PromptStyle.Auto,
-                    attempts: 2
-                );
+                promptGenerator.ConfirmDialog(context, TryAnotherSimbol, "Quer tentar com outra imagem?", attemptsAllowed: 2);
             }
             else
             {
@@ -168,13 +161,13 @@ namespace TelesBot.Dialogs
                 } 
                 else
                 {
-                    await context.PostAsync("Ah... você que se foda então (｡•‿•｡)凸");
-                    context.Done("Zoeeeeira... ^̮^ rs. Deixa eu tentar contar outra? (◔ ◡ ◔)");
+                    await context.PostAsync("Ah... que pena x.x"); //você que se foda então (｡•‿•｡)凸
+                    context.Done("Deixa eu tentar contar outra? (◔ ◡ ◔)");
                 }
             }
             catch (TooManyAttemptsException ex)
             {
-                await context.PostAsync("Já que você não quer responder direito... se fode aí (╹◡╹)凸");
+                await context.PostAsync("Já que você não quer conversar direito... fica ai");
                 FinalizeContextWithFail(context, "Quando quiser seriamente uma zoeira, me dá um toque. (︶︹︺)");
             }
         }

@@ -18,8 +18,8 @@ namespace TelesBot.Forms
             var form = new FormBuilder<ChooseJokes>();
 
             form.Configuration.DefaultPrompt.ChoiceStyle = ChoiceStyleOptions.Buttons;
-            form.Configuration.Yes = new string[] { "sim", "yes", "s", "y", "yep", "é", "ye", "eh", "claro", "yeap" };
-            form.Configuration.No = new string[] { "não", "nao", "no", "not", "n", "nem", "nop", "not", "errado" };
+            form.Configuration.Yes = new string[] { "sim", "yes", "s", "y", "yep", "é", "ye", "eh", "claro", "yeap", "quero", "quero sim", "isso", "é isso aí" };
+            form.Configuration.No = new string[] { "não", "nao", "no", "not", "n", "nem", "nop", "not", "errado", "mudei de ideia", "nem" };
             form.Message("Você vai ter que me ajudar (∪ ◡ ∪)")
                 .Field(nameof(JokeType))
                 .Confirm(async (state) =>

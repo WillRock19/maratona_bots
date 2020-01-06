@@ -20,5 +20,8 @@ namespace TelesBot.Extensions
 
             throw new Exception("Describe not found: " + describe);
         }
+
+        public static bool HasValue(this string text) => 
+            !string.IsNullOrWhiteSpace(text);
     }
 }

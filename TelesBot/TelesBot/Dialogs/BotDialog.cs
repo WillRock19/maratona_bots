@@ -19,22 +19,26 @@ namespace TelesBot.Dialogs
         private SimpleResponsesGenerator customResponses;
         private IAnnouncer announcer;
         private IDialogFactory dialogFactory;
+        private IPromptDialogGenerator promptGenerator;
 
-        public BotDialog(IAnnouncer announcer, IDialogFactory dialogFactory)
+        public BotDialog(IAnnouncer announcer, IDialogFactory dialogFactory, IPromptDialogGenerator promptGenerator)
         {
             customResponses = new SimpleResponsesGenerator();
 
             this.announcer = announcer;
             this.dialogFactory = dialogFactory;
+            this.promptGenerator = promptGenerator;
         }
 
         [LuisIntent("Ajuda")]
         public async Task Ajuda(IDialogContext context, LuisResult result)
         {
             var message = context.MakeMessage();
-            message.Attachments = new List<Attachment>();
+            message.Attachments = new List<Attachment>()
+            {
+                announcer.Help().ToAttachment()
+            };
 
-            message.Attachments.Add(announcer.Help().ToAttachment());
             await context.PostAsync(message);
         }
 
@@ -43,7 +47,7 @@ namespace TelesBot.Dialogs
         {
             var response = await customResponses.RespondGreeting(result.Query);
 
-            if (!string.IsNullOrWhiteSpace(response))
+            if (response.HasValue())
                 await context.PostAsync(response);
 
             FinalizeContextWithDone(context);
@@ -54,7 +58,7 @@ namespace TelesBot.Dialogs
         {
             var response = customResponses.RespondSmallTalk();
 
-            if(!string.IsNullOrWhiteSpace(response))
+            if(response.HasValue())
                 await context.PostAsync(response);
 
             FinalizeContextWithDone(context);
@@ -64,7 +68,7 @@ namespace TelesBot.Dialogs
         public async Task EstadoEspiritoUsuarioNegativo(IDialogContext context, LuisResult result)
         {
             await context.PostAsync("Poxa... não fica assim não! ఠ_ఠ");
-            await OfferUserAJoke(context, "Que tal uma piadinha pra melhorar esse humor? ( ・ω・)");
+            promptGenerator.ConfirmDialog(context, CheckUserWantsAJoke, "Que tal uma piadinha pra melhorar esse humor? ( ・ω・)");
         }
 
         [LuisIntent("Emocional.Usuario.Positivo")]
@@ -74,21 +78,9 @@ namespace TelesBot.Dialogs
         }
 
         [LuisIntent("ContarPiada")]
-        public async Task UsuarioQuerOuvirUmaPiada(IDialogContext context, LuisResult result) =>
-            await TellOneJoke(context);
+        public async Task UsuarioQuerOuvirUmaPiada(IDialogContext context, LuisResult result) => await TellJoke(context);
 
-        public async Task OfferUserAJoke(IDialogContext context, string message)
-        {
-            PromptDialog.Confirm(
-                    context: context,
-                    resume: CheckUserWantsAJoke,
-                    prompt: message,
-                    retry: "Opção escolhida inválida. Favor, escolher uma das disponíveis.",
-                    promptStyle: PromptStyle.Auto
-                );
-        }
-
-        private async Task TellOneJoke(IDialogContext context)
+        private async Task TellJoke(IDialogContext context)
         {
             var formDialog = new FormDialog<ChooseJokes>(new ChooseJokes(), ChooseJokes.BuildForm, FormOptions.PromptInStart);
             context.Call(formDialog, ExecuteAfterForm);
@@ -107,18 +99,8 @@ namespace TelesBot.Dialogs
         {
             try
             {
-                var operationResult = await result;
-                await Task.Delay(2000).ContinueWith(t =>
-                {
-                    PromptDialog.Confirm(
-                       context: context,
-                       resume: CheckUserWantsAJoke,
-                       prompt: operationResult.ToString(),
-                       retry: "Opção escolhida inválida. Favor, escolher uma das disponíveis.",
-                       promptStyle: PromptStyle.Auto,
-                       attempts: 2
-                   );
-                });
+                var confirmMessage = (await result).ToString();
+                promptGenerator.ConfirmDialog(context, CheckUserWantsAJoke, confirmMessage, attemptsAllowed: 2);
             }
             catch(Exception e)
             {
@@ -136,7 +118,7 @@ namespace TelesBot.Dialogs
                 await SendConversationEndMessage(context);
                 FinalizeContextWithDone(context);
             }
-            else await TellOneJoke(context);
+            else await TellJoke(context);
         }
 
         private async Task SendConversationEndMessage(IDialogContext context) =>

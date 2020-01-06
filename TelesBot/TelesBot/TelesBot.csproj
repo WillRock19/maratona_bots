@@ -144,6 +144,8 @@
     </Compile>
     <Compile Include="Enums\JokeCategory.cs" />
     <Compile Include="Helpers\CardGeneratorHelper.cs" />
+    <Compile Include="Interfaces\IPromptDialogGenerator.cs" />
+    <Compile Include="Services\PromptDialogGenerator.cs" />
     <Compile Include="Helpers\QnaMakerHelper.cs" />
     <Compile Include="Interfaces\IAnnouncer.cs" />
     <Compile Include="Interfaces\ICardGeneratorHelper.cs" />
